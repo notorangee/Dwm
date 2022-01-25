@@ -71,13 +71,17 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
-static const char *flameshot[]   = {"flameshot", "gui", NULL };
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, NULL };
+/*flameshot截图*/
+static const char *flameshot[]   = {"flameshot", "gui", NULL };
+/*托盘开启关闭脚本*/
 static const char *trayerstart[] = { "/home/orange/Dwm/Script/trayerstart.sh", NULL };
 static const char *trayeroff[]   = { "/home/orange/Dwm/Script/trayeroff.sh", NULL };
+/*屏幕亮度调节脚本*/
 static const char *backlightUp[] = { "/home/orange/Dwm/Script/backlightUp.sh", NULL};
 static const char *backlightDown[] = { "/home/orange/Dwm/Script/backlightDown.sh", NULL};
+/*系统音量调节脚本*/
 static const char *soundUp[] = { "/home/orange/Dwm/Script/soundUp.sh", NULL};
 static const char *soundDown[] = { "/home/orange/Dwm/Script/soundDown.sh", NULL};
 
@@ -85,6 +89,7 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                XK_Return, spawn,          {.v = termcmd } },
+	/*脚本按键绑定*/
 	{ MODKEY,                       XK_F1,     spawn,          {.v = flameshot } },
         { MODKEY,                       XK_F2,     spawn,          {.v = soundDown } },
         { MODKEY,                       XK_F3,     spawn,          {.v = soundUp } },
@@ -92,6 +97,7 @@ static Key keys[] = {
         { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
         { MODKEY,                       XK_F7,     spawn,          {.v = trayerstart } } ,
         { MODKEY,                       XK_F8,     spawn,          {.v = trayeroff } },
+	/**/
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -99,7 +105,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_y,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	//补丁
+	/*补丁*/
 	{ MODKEY,                       XK_w,      togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,    	                XK_f,      togglefullscr,  {0} },
 	{ MODKEY,	                XK_u,      rotatestack,    {.i = +1 } },
