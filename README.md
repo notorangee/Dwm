@@ -29,13 +29,13 @@ $ cd Dwm
 
 ```
 
-## 配置X11
-### 安装xorg-xinit
+## 安装脚本依赖
+### 使用aur安装
 ```shell 
-# pacman -S xorg xorg-xinit
+# pacman -S xorg xorg-xinit backlight_control typora-free
 ```
 
-### 拷贝配置文件
+### 拷贝.xinitrc配置文件
 
 ```shell
 # mv .xinitrc $HOME/.xinitrc
