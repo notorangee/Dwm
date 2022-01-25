@@ -1,7 +1,7 @@
 # MyDwm
 ## 克隆存储库
 ```shell
-$ git clone git@github.com:AvavaAvaOrange/MyDwm.git
+$ git clone https://github.com/AvavaAvaOrange/MyDwm.git 
 
 ```
 ## 构建&安装
