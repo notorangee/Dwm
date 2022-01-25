@@ -74,12 +74,12 @@ static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 static const char *flameshot[]   = {"flameshot", "gui", NULL };
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, NULL };
-static const char *trayerstart[] = { "/home/orange/Script/trayerstart.sh", NULL };
-static const char *trayeroff[]   = { "/home/orange/Script/trayeroff.sh", NULL };
-static const char *backlightUp[] = { "/home/orange/Script/backlightUp.sh", NULL};
-static const char *backlightDown[] = { "/home/orange/Script/backlightDown.sh", NULL};
-static const char *soundUp[] = { "/home/orange/Script/soundUp.sh", NULL};
-static const char *soundDown[] = { "/home/orange/Script/soundDown.sh", NULL};
+static const char *trayerstart[] = { "Script/trayerstart.sh", NULL };
+static const char *trayeroff[]   = { "Script/trayeroff.sh", NULL };
+static const char *backlightUp[] = { "Script/backlightUp.sh", NULL};
+static const char *backlightDown[] = { "Script/backlightDown.sh", NULL};
+static const char *soundUp[] = { "Script/soundUp.sh", NULL};
+static const char *soundDown[] = { "Script/soundDown.sh", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
