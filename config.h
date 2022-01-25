@@ -5,6 +5,7 @@ static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const unsigned int minwsz    = 20;       /* Minimal heigt of a client for smfact */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
 static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:size=12" };
 static const char dmenufont[]       = "SauceCodePro Nerd Font Mono:size=12";
@@ -46,6 +47,7 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float smfact     = 0.00; /* factor of tiled clients [0.00..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
@@ -88,7 +90,7 @@ static const char *soundDown[] = { "/home/orange/Dwm/Script/soundDown.sh", NULL}
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,	                XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,	               XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
 	{ MODKEY,                       XK_F1,     spawn,          {.v = flameshot } },
         { MODKEY,                       XK_F2,     spawn,          {.v = soundDown } },
@@ -100,7 +102,7 @@ static Key keys[] = {
 	/**/
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                       XK_k,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_o,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_y,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
@@ -112,6 +114,8 @@ static Key keys[] = {
 	{ MODKEY,          	        XK_i,      rotatestack,    {.i = -1 } },
 	{ MODKEY|ShiftMask,	        XK_k,      aspectresize,   {.i = +24} },
         { MODKEY|ShiftMask,        	XK_j,      aspectresize,   {.i = -24} },
+	{ MODKEY|ShiftMask,             XK_h,      setsmfact,      {.f = +0.05} },
+	{ MODKEY|ShiftMask,             XK_l,      setsmfact,      {.f = -0.05} },
 
 
 	{ MODKEY,                       XK_Return, zoom,           {0} },
@@ -157,3 +161,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+ 
