@@ -1,13 +1,29 @@
-# MyDwm
+# Dwm
 ## 克隆存储库
 ```shell
-$ git clone https://github.com/AvavaAvaOrange/MyDwm.git 
+$ git clone https://github.com/AvavaAvaOrange/Dwm.git 
 
 ```
+## 修改配置
+打开配置文件 我使用的是neovim
+```shell
+$ cd Dwm
+
+# nvim config
+```
+
+把路径中的YourUserName改为你的用户名
+```shell
+  static const char *trayerstart[] = { "/home/YourUserName/Dwm/Script/trayerstart.sh", NULL };
+  static const char *trayeroff[]   = { "/home/YourUserName/Dwm/Script/trayeroff.sh", NULL };
+  static const char *backlightUp[] = { "/home/YourUserName/Dwm/Script/backlightUp.sh", NULL};
+  static const char *backlightDown[] = { "/home/YourUserName/Dwm/Script/backlightDown.sh", NULL};
+  static const char *soundUp[] = { "/home/YourUserName/Dwm/Script/soundUp.sh", NULL};
+  static const char *soundDown[] = { "/home/YourUserName/Dwm/Script/soundDown.sh", NULL};
+```
+
 ## 构建&安装
 ```shell
-
-$ cd MyDwm
 
 # make clean install
 
@@ -29,7 +45,7 @@ $ cd MyDwm
 
 项目主页：https://github.com/nullgemm/ly
 
-## 克隆&编译Ly
+### 克隆&编译Ly
 克隆Ly存储库
 ```
 $ git clone --recurse-submodules https://github.com/nullgemm/ly.git
