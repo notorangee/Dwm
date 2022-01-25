@@ -10,11 +10,11 @@ static const int vertpad            = 3;       /* vertical padding of bar */
 static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
 static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=16:type=Bold:antialias=true:autohint=true" };
-static const char col_gray1[]       = "#282c34";
-static const char col_gray2[]       = "#282c34";
-static const char col_gray3[]       = "#d7d7d7";
-static const char col_gray4[]       = "#924441";
-static const char col_cyan[]        = "#005577";
+static const char col_gray1[]       = "#2d2c2c";
+static const char col_gray2[]       = "#2d2c2c";//灰白
+static const char col_gray3[]       = "#e8e4e4";//灰黑
+static const char col_gray4[]       = "#bb3a3a";//红色
+static const char col_cyan[]        = "#005577";//蓝色
 
 //alpha补丁
 static const unsigned int baralpha = 0xd0;
@@ -23,7 +23,7 @@ static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray3, col_gray4,  col_gray4  },
+	[SchemeSel]  = { col_gray3, col_gray4, col_gray4  },
 };
 
 //alpha补丁
