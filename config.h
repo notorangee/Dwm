@@ -2,13 +2,14 @@
 
 /* appearance */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const unsigned int gappx     = 3;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const unsigned int minwsz    = 20;       /* Minimal heigt of a client for smfact */
+static const int vertpad            = 3;       /* vertical padding of bar */
+static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:size=12" };
-static const char dmenufont[]       = "SauceCodePro Nerd Font Mono:size=12";
+static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=16:type=Bold:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#282c34";
 static const char col_gray2[]       = "#282c34";
 static const char col_gray3[]       = "#d7d7d7";
@@ -16,7 +17,7 @@ static const char col_gray4[]       = "#924441";
 static const char col_cyan[]        = "#005577";
 
 //alpha补丁
-static const unsigned int baralpha = 0xff;
+static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 
 static const char *colors[][3]      = {
@@ -47,9 +48,8 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
-static const float smfact     = 0.00; /* factor of tiled clients [0.00..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -112,10 +112,11 @@ static Key keys[] = {
 	{ MODKEY,    	                XK_f,      togglefullscr,  {0} },
 	{ MODKEY,	                XK_u,      rotatestack,    {.i = +1 } },
 	{ MODKEY,          	        XK_i,      rotatestack,    {.i = -1 } },
+	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
+	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 	{ MODKEY|ShiftMask,	        XK_k,      aspectresize,   {.i = +24} },
         { MODKEY|ShiftMask,        	XK_j,      aspectresize,   {.i = -24} },
-	{ MODKEY|ShiftMask,             XK_h,      setsmfact,      {.f = +0.05} },
-	{ MODKEY|ShiftMask,             XK_l,      setsmfact,      {.f = -0.05} },
 
 
 	{ MODKEY,                       XK_Return, zoom,           {0} },

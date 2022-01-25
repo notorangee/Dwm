@@ -1,8 +1,9 @@
 #! /bin/sh
-/* 状态栏脚本定义 */
+
+#状态栏脚本定义 
 while true; do
         sleep 1s
-        /* KERNEL=$( uname -r | awk -F "-" '{print $1}' ) */
+        #KERNEL=$( uname -r | awk -F "-" '{print $1}' )
         #WIFI定义
         WIFI_ICON=''
         NO_WIFI_ICON='睊'
