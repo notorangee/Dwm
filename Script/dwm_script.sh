@@ -21,7 +21,7 @@ while true; do
         #电池定义
         BAT_COUNT=$(acpi -b | awk '{ print $4 }' | awk -F '%' '{print $1}')
         case $BAT_COUNT in
-                  *|10|[0-9])  BAT_ICON="ﴏ" ;;
+                    10|[0-9])  BAT_ICON="ﴏ" ;;
                 2[0-5]|1[1-9]) BAT_ICON="" ;;
                 3[0-9]|2[6-9]) BAT_ICON="" ;;
                 5[0-5]|4[0-9]) BAT_ICON="" ;;
