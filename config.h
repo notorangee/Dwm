@@ -9,11 +9,11 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int vertpad            = 3;       /* vertical padding of bar */
 static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=16:type=Bold:antialias=true:autohint=true" };
+static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=16:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
-static const char col_gray2[]       = "#2d2c2c";//灰白
-static const char col_gray3[]       = "#e8e4e4";//灰黑
-static const char col_gray4[]       = "#bb3a3a";//红色
+static const char col_gray2[]       = "#2d2c2c";//灰黑
+static const char col_gray3[]       = "#e8e4e4";//灰白
+static const char col_gray4[]       = "#bb3a3a";//粉红
 static const char col_cyan[]        = "#005577";//蓝色
 
 //alpha补丁
@@ -87,24 +87,26 @@ static const char *soundUp[] = { "amixer", "-qM", "set", "Master", "5%+", "umute
 static const char *soundDown[] = { "amixer", "-qM", "set", "Master", "5%-", "umute", NULL};
 static const char *soundToggle[] = {"amixer", "set", "Master", "toggle", NULL};
 /*托盘开启关闭脚本*/
-static const char *trayerStart[] = { "/home/orange/Dwm/Script/trayerstart.sh", NULL };
-static const char *trayerOff[]   = { "/home/orange/Dwm/Script/trayeroff.sh", NULL };
+static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
+/*关机补丁*/
+static const char *poweroffcmd[]  = { "poweroff", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
+	/*Super*/
 	{ MODKEY,                       XK_F1,     spawn,          {.v = soundToggle } },
         { MODKEY,                       XK_F2,     spawn,          {.v = soundDown } },
         { MODKEY,                       XK_F3,     spawn,          {.v = soundUp } },
         { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
         { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
-        { MODKEY,                       XK_F7,    spawn,          {.v = flameshot } },
-        { MODKEY,                       XK_F8,     spawn,          {.v = trayerStart } } ,
-        { MODKEY,                       XK_F9,     spawn,          {.v = trayerOff } },
+        { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
+	{ MODKEY,             		0xff1b,    spawn,          {.v = poweroffcmd} }, //Esc
+	/*Super+Shift*/
+        { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = flameshot } }, 
 
-	/**/
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = +1 } },
@@ -122,7 +124,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 	{ MODKEY|ShiftMask,	        XK_k,      aspectresize,   {.i = +24} },
         { MODKEY|ShiftMask,        	XK_j,      aspectresize,   {.i = -24} },
-
 
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },

@@ -2,8 +2,9 @@
 
 #状态栏脚本定义 
 while true; do
-        sleep 1s
-        #KERNEL=$( uname -r | awk -F "-" '{print $1}' )
+	#壁纸重载
+	nitrogen --restore
+
         #WIFI定义
         WIFI_ICON=''
         NO_WIFI_ICON='睊'
@@ -19,6 +20,7 @@ while true; do
         fi
 
         #电池定义
+	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
         BAT_COUNT=$(acpi -b | awk '{ print $4 }' | awk -F '%' '{print $1}')
         case $BAT_COUNT in
                     10|[0-9])  BAT_ICON="ﴏ" ;;
@@ -32,6 +34,13 @@ while true; do
         esac
 	BAT_STATUS="$BAT_ICON:$BAT_COUNT%"
 
+	##低电量提示
+        if [[ $BAT_COUNT -lt 10 && "$BAT_ISWORK" = "Discharging" ]]
+        then
+                xsetroot -name "设备电量不足10%"
+		sleep 1s
+        fi
+
 	#蓝牙定义
         BLUE_DEVICE=$( bluetoothctl info | awk '/Alias/ {print $2}' )
         BLUE_STATUS=""
@@ -44,17 +53,14 @@ while true; do
         fi
 
         #状态栏定义
-        if [ $BAT_COUNT -lt 10 ]
-        then
-                xsetroot -name "设备电量不足10%"
-                sleep 1s
-        fi
-        LOCALTIME=$( date +'%F %A %T' )
+        LOCALTIME=$( date +'%F %A %H:%M' )
         BACKLIGHT_INFO=`echo "scale=2; ($( cat /sys/class/backlight/amdgpu_bl0/actual_brightness ) / 255) * 100" | bc`
         BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
         VOL=$( amixer get Master | awk -F'[][]' 'END{ print $2 }' )
 	VOL_STATUS="ﰝ:$VOL"
-        xsetroot -name " $BLUE_STATUS $WIFI_STATUS $BACKLIGHT $VOL_STATUS $BAT_STATUS $LOCALTIME "
 
+	#状态栏样式
+        xsetroot -name " $BLUE_STATUS $WIFI_STATUS $BACKLIGHT $VOL_STATUS $BAT_STATUS $LOCALTIME "
+        sleep 1s
 done &
 
