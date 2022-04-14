@@ -88,7 +88,9 @@ static const char *soundDown[] = { "amixer", "-qM", "set", "Master", "5%-", "umu
 static const char *soundToggle[] = {"amixer", "set", "Master", "toggle", NULL};
 /*托盘开启关闭脚本*/
 static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
-/*关机补丁*/
+/*锁屏*/
+static const char *slockcmd[] = { "slock", NULL };
+/*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
 
 static Key keys[] = {
@@ -102,6 +104,7 @@ static Key keys[] = {
         { MODKEY,                       XK_F3,     spawn,          {.v = soundUp } },
         { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
         { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
+        { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
         { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
 	{ MODKEY,             		0xff1b,    spawn,          {.v = poweroffcmd} }, //Esc
 	/*Super+Shift*/
