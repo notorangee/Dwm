@@ -94,6 +94,18 @@ enum {
   ClkLast
 }; /* clicks */
 
+enum { 
+  WIN_NW,
+  WIN_N,
+  WIN_NE,
+  WIN_W,
+  WIN_C,
+  WIN_E,
+  WIN_SW,
+  WIN_S,
+  WIN_SE
+}; /* coordinates for moveplace */
+
 typedef union {
   int i;
   unsigned int ui;
@@ -216,6 +228,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static void moveplace(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
@@ -282,6 +295,7 @@ static const char dwmdir[] = "dwm";
 static const char localshare[] = ".local/share";
 static char stext[256];
 static int screen;
+static int oldsignal = -1;
 static int sw, sh;      /* X display screen geometry width, height */
 static int bh, blw = 0; /* bar geometry */
 static int lrpad;       /* sum of left and right padding for text */
@@ -1266,6 +1280,41 @@ void movemouse(const Arg *arg) {
   }
 }
 
+void
+moveplace(const Arg *arg)
+{
+	Client *c;
+	int nh, nw, nx, ny;
+	c = selmon->sel;
+	if (!c || (arg->ui >= 9))
+		 return;
+	if(c->isfloating && oldsignal == arg->ui){
+	  togglefloating(NULL);
+	  return;
+	}
+        if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+        	togglefloating(NULL);
+	nh = (selmon->wh / 2) - (c->bw * 2);
+        nw = (selmon->ww / 2) - (c->bw * 2);
+        nx = (arg->ui % 3) -1;
+        ny = (arg->ui / 3) -1;
+        if (nx < 0)
+        	nx = selmon->wx;
+        else if(nx > 0)
+        	nx = selmon->wx + selmon->ww - nw - c->bw*2;
+        else
+        	nx = selmon->wx + selmon->ww/2 - nw/2 - c->bw;
+        if (ny <0)
+        	ny = selmon->wy;
+        else if(ny > 0)
+        	ny = selmon->wy + selmon->wh - nh - c->bw*2;
+        else
+        	ny = selmon->wy + selmon->wh/2 - nh/2 - c->bw;
+        resize(c, nx, ny, nw, nh, True);
+        XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, nw/2, nh/2);
+        oldsignal = arg->ui;
+}
+
 Client *nexttiled(Client *c) {
   for (; c && (c->isfloating || !ISVISIBLE(c)); c = c->next)
     ;
@@ -1878,6 +1927,8 @@ void togglefloating(const Arg *arg) {
   if (selmon->sel->isfloating)
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
+  selmon->sel->x = selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
+  selmon->sel->y = selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
   arrange(selmon);
 }
 
