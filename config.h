@@ -13,7 +13,7 @@ static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=1
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
-static const char col_gray4[]       = "#bb3a3a";//粉红
+static const char col_gray4[]       = "#9b8bee";//粉红
 static const char col_cyan[]        = "#005577";//蓝色
 
 //alpha补丁
@@ -109,7 +109,7 @@ static Key keys[] = {
         { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
 	{ MODKEY,             		0xff1b,    spawn,          {.v = flameshot } }, //Esc
 	/*Super+Shift*/
-        { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
+        { MODKEY|ShiftMask,             0xff1b,    spawn,          {.v = poweroffcmd } }, 
 
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
