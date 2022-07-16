@@ -77,7 +77,7 @@ static const char *termcmd[]  = { "alacritty", NULL };
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 /*alacritty小窗口*/
 static const char scratchpadname[] = "alacritty small window";
-static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, NULL };
+static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
 /*flameshot截图*/
 static const char *flameshot[]   = {"flameshot", "gui", NULL };
 /*屏幕亮度调节*/
