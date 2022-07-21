@@ -54,7 +54,8 @@
 #define INTERSECT(x, y, w, h, m)                                               \
   (MAX(0, MIN((x) + (w), (m)->wx + (m)->ww) - MAX((x), (m)->wx)) *             \
    MAX(0, MIN((y) + (h), (m)->wy + (m)->wh) - MAX((y), (m)->wy)))
-#define ISVISIBLE(C) ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define ISVISIBLEONTAG(C, T) ((C->tags & T))
+#define ISVISIBLE(C) ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags])
 #define LENGTH(X) (sizeof X / sizeof X[0])
 #define MOUSEMASK (BUTTONMASK | PointerMotionMask)
 #define WIDTH(X) ((X)->w + 2 * (X)->bw)
@@ -64,7 +65,7 @@
 #define OPAQUE 0xffU
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel }; /* color schemes */
+enum { SchemeNorm, SchemeSel };                  /* color schemes */
 enum {
   NetSupported,
   NetWMName,
@@ -94,7 +95,7 @@ enum {
   ClkLast
 }; /* clicks */
 
-enum { 
+enum {
   WIN_NW,
   WIN_N,
   WIN_NE,
@@ -190,6 +191,11 @@ static int applysizehints(Client *c, int *x, int *y, int *w, int *h,
 static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
 static void attach(Client *c);
+static void attachabove(Client *c);
+static void attachaside(Client *c);
+static void attachbelow(Client *c);
+static void attachbottom(Client *c);
+static void attachtop(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
@@ -228,6 +234,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static Client *nexttagged(Client *c);
 static void moveplace(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
@@ -500,6 +507,70 @@ void attach(Client *c) {
   c->mon->clients = c;
 }
 
+void attachabove(Client *c) {
+  if (c->mon->sel == NULL || c->mon->sel == c->mon->clients ||
+      c->mon->sel->isfloating) {
+    attach(c);
+    return;
+  }
+
+  Client *at;
+  for (at = c->mon->clients; at->next != c->mon->sel; at = at->next)
+    ;
+  c->next = at->next;
+  at->next = c;
+}
+
+void attachaside(Client *c) {
+  Client *at = nexttagged(c);
+  if (!at) {
+    attach(c);
+    return;
+  }
+  c->next = at->next;
+  at->next = c;
+}
+
+void attachbelow(Client *c) {
+  if (c->mon->sel == NULL || c->mon->sel == c || c->mon->sel->isfloating) {
+    attach(c);
+    return;
+  }
+  c->next = c->mon->sel->next;
+  c->mon->sel->next = c;
+}
+
+void attachbottom(Client *c) {
+  Client *below = c->mon->clients;
+  for (; below && below->next; below = below->next)
+    ;
+  c->next = NULL;
+  if (below)
+    below->next = c;
+  else
+    c->mon->clients = c;
+}
+
+void attachtop(Client *c) {
+  int n;
+  Monitor *m = selmon;
+  Client *below;
+
+  for (n = 1, below = c->mon->clients;
+       below && below->next &&
+       (below->isfloating || !ISVISIBLEONTAG(below, c->tags) ||
+        n != m->nmaster);
+       n = below->isfloating || !ISVISIBLEONTAG(below, c->tags) ? n + 0 : n + 1,
+      below = below->next)
+    ;
+  c->next = NULL;
+  if (below) {
+    c->next = below->next;
+    below->next = c;
+  } else
+    c->mon->clients = c;
+}
+
 void attachstack(Client *c) {
   c->snext = c->mon->stack;
   c->mon->stack = c;
@@ -606,7 +677,8 @@ void clientmessage(XEvent *e) {
     if (cme->data.l[1] == netatom[NetWMFullscreen] ||
         cme->data.l[2] == netatom[NetWMFullscreen])
       setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
-    			|| (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->isfullscreen)));
+                        || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
+                            !c->isfullscreen)));
   } else if (cme->message_type == netatom[NetActiveWindow]) {
     if (c != selmon->sel && !c->isurgent)
       seturgent(c, 1);
@@ -793,7 +865,7 @@ void drawbar(Monitor *m) {
 
   /* draw status first so it can be overdrawn by tags later */
   if (m == selmon) { /* status is only drawn on selected monitor */
-    drw_setscheme(drw, scheme[SchemeNorm]); 
+    drw_setscheme(drw, scheme[SchemeNorm]);
     sw = tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
     drw_text(drw, m->ww - tw - 2 * sp, 0, tw, bh, 0, stext, 0);
   }
@@ -806,7 +878,8 @@ void drawbar(Monitor *m) {
   x = 0;
   for (i = 0; i < LENGTH(tags); i++) {
     w = TEXTW(tags[i]);
-    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); 
+    drw_setscheme(
+        drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     if (occ & 1 << i)
       drw_rect(drw, x + boxs, boxs, boxw, boxw,
@@ -815,11 +888,11 @@ void drawbar(Monitor *m) {
     x += w;
   }
   w = blw = TEXTW(m->ltsymbol);
-  drw_setscheme(drw, scheme[SchemeNorm]); 
+  drw_setscheme(drw, scheme[SchemeNorm]);
   x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
   if ((w = m->ww - sw - x) > bh) {
-    drw_setscheme(drw, scheme[SchemeNorm]); 
+    drw_setscheme(drw, scheme[SchemeNorm]);
     if (m->sel) {
       int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
       mid = mid >= lrpad / 2 ? mid : lrpad / 2;
@@ -1159,7 +1232,25 @@ void manage(Window w, XWindowAttributes *wa) {
     c->isfloating = c->oldstate = trans != None || c->isfixed;
   if (c->isfloating)
     XRaiseWindow(dpy, c->win);
-  attach(c);
+  switch (attachdirection) {
+  case 1:
+    attachabove(c);
+    break;
+  case 2:
+    attachaside(c);
+    break;
+  case 3:
+    attachbelow(c);
+    break;
+  case 4:
+    attachbottom(c);
+    break;
+  case 5:
+    attachtop(c);
+    break;
+  default:
+    attach(c);
+  }
   attachstack(c);
   XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32,
                   PropModeAppend, (unsigned char *)&(c->win), 1);
@@ -1232,7 +1323,7 @@ void movemouse(const Arg *arg) {
   if (!(c = selmon->sel))
     return;
   if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
-   return;
+    return;
   restack(selmon);
   ocx = c->x;
   ocy = c->y;
@@ -1280,39 +1371,45 @@ void movemouse(const Arg *arg) {
   }
 }
 
-void
-moveplace(const Arg *arg)
-{
-	Client *c;
-	int nh, nw, nx, ny;
-	c = selmon->sel;
-	if (!c || (arg->ui >= 9))
-		 return;
-	if(c->isfloating && oldsignal == arg->ui){
-	  togglefloating(NULL);
-	  return;
-	}
-        if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
-        	togglefloating(NULL);
-	nh = (selmon->wh / 2) - (c->bw * 2);
-        nw = (selmon->ww / 2) - (c->bw * 2);
-        nx = (arg->ui % 3) -1;
-        ny = (arg->ui / 3) -1;
-        if (nx < 0)
-        	nx = selmon->wx;
-        else if(nx > 0)
-        	nx = selmon->wx + selmon->ww - nw - c->bw*2;
-        else
-        	nx = selmon->wx + selmon->ww/2 - nw/2 - c->bw;
-        if (ny <0)
-        	ny = selmon->wy;
-        else if(ny > 0)
-        	ny = selmon->wy + selmon->wh - nh - c->bw*2;
-        else
-        	ny = selmon->wy + selmon->wh/2 - nh/2 - c->bw;
-        resize(c, nx, ny, nw, nh, True);
-        XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, nw/2, nh/2);
-        oldsignal = arg->ui;
+Client *nexttagged(Client *c) {
+  Client *walked = c->mon->clients;
+  for (; walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
+       walked = walked->next)
+    ;
+  return walked;
+}
+
+void moveplace(const Arg *arg) {
+  Client *c;
+  int nh, nw, nx, ny;
+  c = selmon->sel;
+  if (!c || (arg->ui >= 9))
+    return;
+  if (c->isfloating && oldsignal == arg->ui) {
+    togglefloating(NULL);
+    return;
+  }
+  if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+    togglefloating(NULL);
+  nh = (selmon->wh / 2) - (c->bw * 2);
+  nw = (selmon->ww / 2) - (c->bw * 2);
+  nx = (arg->ui % 3) - 1;
+  ny = (arg->ui / 3) - 1;
+  if (nx < 0)
+    nx = selmon->wx;
+  else if (nx > 0)
+    nx = selmon->wx + selmon->ww - nw - c->bw * 2;
+  else
+    nx = selmon->wx + selmon->ww / 2 - nw / 2 - c->bw;
+  if (ny < 0)
+    ny = selmon->wy;
+  else if (ny > 0)
+    ny = selmon->wy + selmon->wh - nh - c->bw * 2;
+  else
+    ny = selmon->wy + selmon->wh / 2 - nh / 2 - c->bw;
+  resize(c, nx, ny, nw, nh, True);
+  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, nw / 2, nh / 2);
+  oldsignal = arg->ui;
 }
 
 Client *nexttiled(Client *c) {
@@ -1634,7 +1731,25 @@ void sendmon(Client *c, Monitor *m) {
   detachstack(c);
   c->mon = m;
   c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
-  attach(c);
+  switch (attachdirection) {
+  case 1:
+    attachabove(c);
+    break;
+  case 2:
+    attachaside(c);
+    break;
+  case 3:
+    attachbelow(c);
+    break;
+  case 4:
+    attachbottom(c);
+    break;
+  case 5:
+    attachtop(c);
+    break;
+  default:
+    attach(c);
+  }
   attachstack(c);
   focus(NULL);
   arrange(NULL);
@@ -1833,7 +1948,8 @@ void showhide(Client *c) {
   if (ISVISIBLE(c)) {
     /* show clients top down */
     XMoveWindow(dpy, c->win, c->x, c->y);
-    if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
+    if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) &&
+        !c->isfullscreen)
       resize(c, c->x, c->y, c->w, c->h, 0);
     showhide(c->snext);
   } else {
@@ -1927,8 +2043,10 @@ void togglefloating(const Arg *arg) {
   if (selmon->sel->isfloating)
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
-  selmon->sel->x = selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
-  selmon->sel->y = selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
+  selmon->sel->x =
+      selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
+  selmon->sel->y =
+      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
   arrange(selmon);
 }
 
@@ -2148,7 +2266,25 @@ int updategeom(void) {
           m->clients = c->next;
           detachstack(c);
           c->mon = mons;
-          attach(c);
+          switch (attachdirection) {
+          case 1:
+            attachabove(c);
+            break;
+          case 2:
+            attachaside(c);
+            break;
+          case 3:
+            attachbelow(c);
+            break;
+          case 4:
+            attachbottom(c);
+            break;
+          case 5:
+            attachtop(c);
+            break;
+          default:
+            attach(c);
+          }
           attachstack(c);
         }
         if (m == selmon)
