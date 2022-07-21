@@ -93,6 +93,8 @@ static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
 static const char *slockcmd[] = { "slock", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
+//重启
+static const char *rebootcmd[]  = { "reboot", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -109,7 +111,8 @@ static Key keys[] = {
         { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
 	{ MODKEY,             		0xff1b,    spawn,          {.v = flameshot } }, //Esc
 	/*Super+Shift*/
-        { MODKEY|ShiftMask,             0xff1b,    spawn,          {.v = poweroffcmd } }, 
+        { MODKEY|ShiftMask,             XK_F1,    spawn,          {.v = poweroffcmd } }, 
+        { MODKEY|ShiftMask,             XK_F2,    spawn,          {.v = rebootcmd } }, 
 
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
