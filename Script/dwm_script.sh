@@ -20,7 +20,7 @@ while true; do
 	
 	#电池定义
 	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
-	BAT_COUNT=$(acpi -b | awk '{ print $4 }' | awk -F '%' '{print $1}')
+	BAT_COUNT=$(acpi -b | awk -F ',' '{print $2}' | awk -F '%' '{print $1}' | awk -F ' ' '{print $1}')
 	case $BAT_COUNT in
 	            10|[0-9])  BAT_ICON="ﴏ" ;;
 	        2[0-5]|1[1-9]) BAT_ICON="" ;;
@@ -49,12 +49,21 @@ while true; do
 		BLUE_STATUS=":NDC"
 	fi
 	
-	#状态栏定义
-	LOCALTIME=$( date +'%F %A %H:%M' )
+	#音量定义
+	VOL_SWITCH=$( amixer get Master | awk -F'[][]' 'END{ print $4 }' )
+	if [ "$VOL_SWITCH" = "on" ];then
+		VOL=$( amixer get Master | awk -F'[][]' 'END{ print $2 }' )
+	else
+		VOL="xx%"
+	fi
+	VOL_STATUS="ﰝ:$VOL"
+
+	#背光定义
 	BACKLIGHT_INFO=`echo "scale=2; ($( cat /sys/class/backlight/amdgpu_bl0/actual_brightness ) / 255) * 100" | bc`
 	BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
-	VOL=$( amixer get Master | awk -F'[][]' 'END{ print $2 }' )
-	VOL_STATUS="ﰝ:$VOL"
+
+	#时间定义
+	LOCALTIME=$( date +'%F %A %H:%M' )
 
 	#输入法状态
 	INPUT_READ=$( fcitx-remote )
@@ -63,7 +72,7 @@ while true; do
 		INPUT_STATUS="中"
 	fi
 	
-	#状态栏样式
+	#状态栏样式定义
 	xsetroot -name " $BLUE_STATUS $WIFI_STATUS $BACKLIGHT $VOL_STATUS $BAT_STATUS $INPUT_STATUS $LOCALTIME "
 	if [ $? -ne 0 ]; then
 		break;

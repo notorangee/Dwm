@@ -7,13 +7,13 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int vertpad            = 3;       /* vertical padding of bar */
-static const int sidepad            = 3;       /* horizontal padding of bar */
+static const int sidepad            = 5;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
 static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=16:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
-static const char col_gray4[]       = "#9b8bee";//粉红
+static const char col_gray4[]       = "#9b8bee";//蓝紫
 static const char col_cyan[]        = "#005577";//蓝色
 
 //alpha补丁
@@ -44,7 +44,6 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "icalingua",NULL,       NULL,       1 << 8,       1,           -1 },
 };
 
 /* layout(s) */
@@ -95,7 +94,7 @@ static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
 static const char *slockcmd[] = { "slock", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
-//重启
+/*重启*/
 static const char *rebootcmd[]  = { "reboot", NULL };
 
 static Key keys[] = {
@@ -143,14 +142,14 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Left,   moveplace,      {.ui = WIN_SW }},
 	{ MODKEY|ShiftMask,             XK_Down,   moveplace,      {.ui = WIN_SE }},
 
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY|ShiftMask,             XK_space,  zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,	                XK_c,      killclient,     {0} },
 	{ MODKEY,                       XK_b,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_n,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	//{ MODKEY,                       XK_space,  setlayout,      {0} },
-	//{ MODKEY|ShiftMask, 	        XK_space,  togglefloating, {0} },
+	{ MODKEY|ShiftMask,             XK_b,  	   setlayout,      {0} },
+	{ MODKEY|ShiftMask, 	        XK_f,  	   togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
