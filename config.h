@@ -75,19 +75,21 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *termcmd[]  = { "alacritty", NULL };
 /*rofi配置*/
-static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
+static const char *dmenucmd[] = { "rofi", "-show", "run", NULL };
 /*alacritty小窗口*/
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
+/*Bluetuith小窗口*/
+static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
 /*flameshot截图*/
 static const char *flameshot[]   = {"flameshot", "gui", NULL };
 /*屏幕亮度调节*/
-static const char *backlightUp[] = { "backlight_control", "+5", NULL};
-static const char *backlightDown[] = { "backlight_control", "-5", NULL};
+static const char *backlightUp[] = { "xbacklight", "-inc", "1", NULL };
+static const char *backlightDown[] = { "xbacklight", "-dec", "1", NULL };
 /*系统音量调节*/
-static const char *soundUp[] = { "amixer", "-qM", "set", "Master", "5%+", "umute", NULL};
-static const char *soundDown[] = { "amixer", "-qM", "set", "Master", "5%-", "umute", NULL};
-static const char *soundToggle[] = {"amixer", "set", "Master", "toggle", NULL};
+static const char *soundUp[] = { "pulseaudio-ctl", "up", NULL };
+static const char *soundDown[] = { "pulseaudio-ctl", "down", NULL };
+static const char *soundToggle[] = { "pulseaudio-ctl", "mute", NULL };
 /*托盘开启关闭脚本*/
 static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
 /*锁屏*/
@@ -106,6 +108,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F1,     spawn,          {.v = soundToggle } },
         { MODKEY,                       XK_F2,     spawn,          {.v = soundDown } },
         { MODKEY,                       XK_F3,     spawn,          {.v = soundUp } },
+	{ MODKEY,                       XK_F4,     spawn,  	   {.v = bluetuithcmd } },
         { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
         { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
         { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
@@ -141,6 +144,11 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Right,  moveplace,      {.ui = WIN_NE }},
 	{ MODKEY|ShiftMask,             XK_Left,   moveplace,      {.ui = WIN_SW }},
 	{ MODKEY|ShiftMask,             XK_Down,   moveplace,      {.ui = WIN_SE }},
+
+	/*自定义*/
+	/*隐藏客户端*/
+	{ MODKEY,                       XK_x,      starthide,      {0} },
+	{ MODKEY|ShiftMask,             XK_x,      stophide,       {0} },
 
 	{ MODKEY|ShiftMask,             XK_space,  zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },

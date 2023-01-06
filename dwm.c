@@ -132,7 +132,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh;
   int bw, oldbw;
   unsigned int tags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, ishide;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -259,6 +259,8 @@ static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void starthide(const Arg *arg);
+static void stophide(const Arg *arg);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
@@ -1942,20 +1944,36 @@ void seturgent(Client *c, int urg) {
   XFree(wmh);
 }
 
+void starthide(const Arg *arg){
+  Client *c = selmon->sel;
+  if(ISVISIBLE(c) && !c -> ishide){
+    c -> ishide = 1; 
+    showhide(c);
+  }
+}
+
+void stophide(const Arg *arg){
+  Client *c = selmon->sel;
+  if(c -> ishide){
+    c -> ishide = 0;
+    showhide(c);
+  }
+}
+
 void showhide(Client *c) {
   if (!c)
     return;
-  if (ISVISIBLE(c)) {
-    /* show clients top down */
-    XMoveWindow(dpy, c->win, c->x, c->y);
+  if (ISVISIBLE(c) && !c -> ishide) { //如果客户端的tag和当前选中的tag一致, 或者没有设置隐藏
+    /* show clients top down(客户端出栈) */ 
+    XMoveWindow(dpy, c->win, c->x, c->y); //把屏幕外的客户端移回屏幕(非浮动窗口)
     if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) &&
-        !c->isfullscreen)
+        !c->isfullscreen) //把屏幕外的客户端移回屏幕并重设窗口大小(浮动窗口)
       resize(c, c->x, c->y, c->w, c->h, 0);
-    showhide(c->snext);
+    showhide(c->snext); //显示下一个客户端，直至当前tag下所有客户端显示完毕
   } else {
-    /* hide clients bottom up */
+    /* hide clients bottom up(客户端入栈) */
     showhide(c->snext);
-    XMoveWindow(dpy, c->win, WIDTH(c) * -2, c->y);
+    XMoveWindow(dpy, c->win, WIDTH(c) * -2, c->y); //移动客户端到当前客户端的宽度 * -2的x坐标点，y不变, 也就是以屏幕左边为对称的-x点的镜像位置
   }
 }
 

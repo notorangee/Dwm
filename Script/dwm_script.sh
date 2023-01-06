@@ -3,7 +3,7 @@
 #状态栏脚本定义 
 while true; do
 	#壁纸重载
-	nitrogen --restore
+	#nitrogen --restore
 	
 	#WIFI定义
 	WIFI_ICON=''
@@ -11,7 +11,7 @@ while true; do
 	WIFI_STATUS="$NO_WIFI_ICON:0%"
 	percentage="0%"
 	if [ $( cat /proc/net/wireless | awk 'END{print $0}' | awk -F ':' '{print $1}' ) = "wlan0" ]; then
-	        percentage="$(grep "^\s*w" /proc/net/wireless | awk '{ print "", int($3 * 100 / 70)}'| xargs)"
+	        percentage="$(grep "^\s*w" /proc/net/wireless | awk '{ print "", int($3 * 100 / 70)}'| xargs | awk '{print $1 }')"
 	        if [ !$percentage ]
 	        then
 			WIFI_STATUS="$WIFI_ICON:$percentage%"
@@ -20,7 +20,7 @@ while true; do
 	
 	#电池定义
 	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
-	BAT_COUNT=$(acpi -b | awk -F ',' '{print $2}' | awk -F '%' '{print $1}' | awk -F ' ' '{print $1}')
+	BAT_COUNT=$(acpi -b | awk -F ',' '{print $2}' | awk -F '%' '{print $1}' | awk -F ' ' 'END{print $1}')
 	case $BAT_COUNT in
 	            10|[0-9])  BAT_ICON="ﴏ" ;;
 	        2[0-5]|1[1-9]) BAT_ICON="" ;;
@@ -40,43 +40,44 @@ while true; do
 	fi
 	
 	#蓝牙定义
-	BLUE_DEVICE=$( bluetoothctl info | awk '/Alias/' | awk '{print $2}' )
+	BLUE_DEVICE1=$( bluetoothctl info | awk '/Alias/' | awk -F ' ' '{print $2}' )
+	BLUE_DEVICE2=$( bluetoothctl info | awk '/Alias/' | awk -F ' ' '{print $3}' )
 	BLUE_STATUS=""
 	
-	if [ $BLUE_DEVICE ]; then
-	        BLUE_STATUS=":$BLUE_DEVICE"
+	if [ $BLUE_DEVICE1 ]; then
+	        BLUE_STATUS=":$BLUE_DEVICE1 $BLUE_DEVICE2"
 	else
 		BLUE_STATUS=":NDC"
 	fi
 	
 	#音量定义
-	VOL_SWITCH=$( amixer get Master | awk -F'[][]' 'END{ print $4 }' )
-	if [ "$VOL_SWITCH" = "on" ];then
-		VOL=$( amixer get Master | awk -F'[][]' 'END{ print $2 }' )
+	VOL_SWITCH=$( pulseaudio-ctl full-status | awk -F " " '{print $2}' )
+	if [ "$VOL_SWITCH" = "no" ];then
+		VOL=$( pulseaudio-ctl full-status | awk -F " " '{print $1}' )
 	else
 		VOL="xx%"
 	fi
 	VOL_STATUS="ﰝ:$VOL"
 
 	#背光定义
-	BACKLIGHT_INFO=`echo "scale=2; ($( cat /sys/class/backlight/amdgpu_bl0/actual_brightness ) / 255) * 100" | bc`
-	BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
+	#BACKLIGHT_INFO=`echo "scale=1; ($( cat /sys/class/backlight/nvidia_0/actual_brightness ) / 50) * 100" | bc`
+	#BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
 
 	#时间定义
 	LOCALTIME=$( date +'%F %A %H:%M' )
 
 	#输入法状态
-	INPUT_READ=$( fcitx-remote )
+	INPUT_READ=$( fcitx5-remote )
 	INPUT_STATUS="英"
 	if [ $INPUT_READ -eq 2 ]; then
 		INPUT_STATUS="中"
 	fi
 	
 	#状态栏样式定义
-	xsetroot -name " $BLUE_STATUS $WIFI_STATUS $BACKLIGHT $VOL_STATUS $BAT_STATUS $INPUT_STATUS $LOCALTIME "
+	xsetroot -name " $BLUE_STATUS $WIFI_STATUS $VOL_STATUS $BAT_STATUS $INPUT_STATUS $LOCALTIME "
+	sleep 1s
 	if [ $? -ne 0 ]; then
 		break;
 	fi
-	sleep 1s
 done &
 
