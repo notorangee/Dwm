@@ -145,10 +145,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Left,   moveplace,      {.ui = WIN_SW }},
 	{ MODKEY|ShiftMask,             XK_Down,   moveplace,      {.ui = WIN_SE }},
 
-	/*自定义*/
-	/*隐藏客户端*/
-	{ MODKEY,                       XK_x,      starthide,      {0} },
-	{ MODKEY|ShiftMask,             XK_x,      stophide,       {0} },
+	{MODKEY,			XK_x, 	   hidewin, 	   {0}},
+   	{MODKEY|ShiftMask, 		XK_x, 	   restorewin, 	   {0}},
+   	{MODKEY, 			XK_z, 	   hideotherwins,  {0}},
+   	{MODKEY|ShiftMask, 		XK_z, 	   restoreotherwins, {0}},
 
 	{ MODKEY|ShiftMask,             XK_space,  zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
