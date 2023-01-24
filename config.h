@@ -43,7 +43,6 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -75,12 +74,13 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *termcmd[]  = { "alacritty", NULL };
 /*rofi配置*/
-static const char *dmenucmd[] = { "rofi", "-show", "run", NULL };
+static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 /*alacritty小窗口*/
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
 /*Bluetuith小窗口*/
 static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
+static const char *musiccmd[] = {"alacritty", "-e", "ncmpcpp", NULL };
 /*flameshot截图*/
 static const char *flameshot[]   = {"flameshot", "gui", NULL };
 /*屏幕亮度调节*/
@@ -92,6 +92,8 @@ static const char *soundDown[] = { "pulseaudio-ctl", "down", NULL };
 static const char *soundToggle[] = { "pulseaudio-ctl", "mute", NULL };
 /*托盘开启关闭脚本*/
 static const char *trayer[] = { "/home/orange/Dwm/Script/trayer.sh", NULL };
+/*熄屏*/
+static const char *forceoffcmd[] = { "sleep", "1;", "xset", "dpms", "force", "off", NULL };
 /*锁屏*/
 static const char *slockcmd[] = { "slock", NULL };
 /*关机*/
@@ -113,7 +115,10 @@ static Key keys[] = {
         { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
         { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
         { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
+        { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
+        { MODKEY,                       XK_F10,    spawn,          {.v = forceoffcmd } } ,
 	{ MODKEY,             		0xff1b,    spawn,          {.v = flameshot } }, //Esc
+											
 	/*Super+Shift*/
         { MODKEY|ShiftMask,             XK_F1,    spawn,          {.v = poweroffcmd } }, 
         { MODKEY|ShiftMask,             XK_F2,    spawn,          {.v = rebootcmd } }, 
@@ -144,6 +149,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Right,  moveplace,      {.ui = WIN_NE }},
 	{ MODKEY|ShiftMask,             XK_Left,   moveplace,      {.ui = WIN_SW }},
 	{ MODKEY|ShiftMask,             XK_Down,   moveplace,      {.ui = WIN_SE }},
+	{ MODKEY|ControlMask,		XK_l,	   movekeyboard_x, {.i = 20}},
+	{ MODKEY|ControlMask,		XK_h,	   movekeyboard_x, {.i = -20}},
+	{ MODKEY|ControlMask,		XK_j,	   movekeyboard_y, {.i = 20}},
+	{ MODKEY|ControlMask,		XK_k,	   movekeyboard_y, {.i = -20}},
 
 	{MODKEY,			XK_x, 	   hidewin, 	   {0}},
    	{MODKEY|ShiftMask, 		XK_x, 	   restorewin, 	   {0}},

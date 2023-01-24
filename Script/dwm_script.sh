@@ -1,5 +1,8 @@
 #! /bin/sh
 
+#变量初始化
+NotifyCount=0
+
 #状态栏脚本定义 
 while true; do
 	#壁纸重载
@@ -32,10 +35,14 @@ while true; do
 	           100|9[6-9]) BAT_ICON="" ;;
 	esac
 	BAT_STATUS="$BAT_ICON:$BAT_COUNT%"
-	
 	##低电量提示
 	if [[ $BAT_COUNT -lt 10 && "$BAT_ISWORK" = "Discharging" ]]; then
 	        xsetroot -name "设备电量不足10%"
+		NotifyCount=$((${NotifyCount} + 1))
+		if [ $NotifyCount -eq 10 ]; then
+			notify-send "电池电量已不足！剩余电量$BAT_COUNT%"
+			NotifyCount=0
+		fi
 		sleep 1s
 	fi
 	

@@ -235,6 +235,8 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static void movekeyboard_x(const Arg *arg);
+static void movekeyboard_y(const Arg *arg);
 static Client *nexttagged(Client *c);
 static void moveplace(const Arg *arg);
 static Client *nexttiled(Client *c);
@@ -1239,6 +1241,8 @@ void manage(Window w, XWindowAttributes *wa) {
   updatewindowtype(c);
   updatesizehints(c);
   updatewmhints(c);
+  c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
+  c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
   XSelectInput(dpy, w,
                EnterWindowMask | FocusChangeMask | PropertyChangeMask |
                    StructureNotifyMask);
@@ -1310,7 +1314,7 @@ void monocle(Monitor *m) {
     if (ISVISIBLE(c))
       n++;
   if (n > 0) /* override layout symbol */
-    snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
+    snprintf(m->ltsymbol, sizeof m->ltsymbol, "");
   for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
     resize(c, m->wx + 3, m->wy + 3, m->ww - (2 * (c->bw + 3)), m->wh - (2 * (c->bw + 3)), 0);
 }
@@ -1427,6 +1431,92 @@ void moveplace(const Arg *arg) {
   resize(c, nx, ny, nw, nh, True);
   XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, nw / 2, nh / 2);
   oldsignal = arg->ui;
+}
+
+void
+movekeyboard_x(const Arg *arg){
+	int ocx, ocy, nx, ny;
+	Client *c;
+	Monitor *m;
+
+	if (!(c = selmon->sel))
+		return;
+
+	if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
+		return;
+
+	restack(selmon);
+
+	ocx = c->x;
+	ocy = c->y;
+
+	nx = ocx + arg->i;
+	ny = ocy;
+
+	if (abs(selmon->wx - nx) < snap)
+		nx = selmon->wx;
+	else if (abs((selmon->wx + selmon->ww) - (nx + WIDTH(c))) < snap)
+		nx = selmon->wx + selmon->ww - WIDTH(c);
+
+	if (abs(selmon->wy - ny) < snap)
+		ny = selmon->wy;
+	else if (abs((selmon->wy + selmon->wh) - (ny + HEIGHT(c))) < snap)
+		ny = selmon->wy + selmon->wh - HEIGHT(c);
+
+	if (!c->isfloating)
+		togglefloating(NULL);
+
+	if (!selmon->lt[selmon->sellt]->arrange || c->isfloating)
+		resize(c, nx, ny, c->w, c->h, 1);
+
+	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
+		sendmon(c, m);
+		selmon = m;
+		focus(NULL);
+	}
+}
+
+void
+movekeyboard_y(const Arg *arg){
+	int ocx, ocy, nx, ny;
+	Client *c;
+	Monitor *m;
+
+	if (!(c = selmon->sel))
+		return;
+
+	if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
+		return;
+
+	restack(selmon);
+
+	ocx = c->x;
+	ocy = c->y;
+
+	nx = ocx;
+	ny = ocy + arg->i;
+
+	if (abs(selmon->wx - nx) < snap)
+		nx = selmon->wx;
+	else if (abs((selmon->wx + selmon->ww) - (nx + WIDTH(c))) < snap)
+		nx = selmon->wx + selmon->ww - WIDTH(c);
+
+	if (abs(selmon->wy - ny) < snap)
+		ny = selmon->wy;
+	else if (abs((selmon->wy + selmon->wh) - (ny + HEIGHT(c))) < snap)
+		ny = selmon->wy + selmon->wh - HEIGHT(c);
+
+	if (!c->isfloating)
+		togglefloating(NULL);
+
+	if (!selmon->lt[selmon->sellt]->arrange || c->isfloating)
+		resize(c, nx, ny, c->w, c->h, 1);
+
+	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
+		sendmon(c, m);
+		selmon = m;
+		focus(NULL);
+	}
 }
 
 Client *nexttiled(Client *c) {
