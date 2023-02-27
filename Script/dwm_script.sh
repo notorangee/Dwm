@@ -48,11 +48,10 @@ while true; do
 	
 	#蓝牙定义
 	BLUE_DEVICE1=$( bluetoothctl info | awk '/Alias/' | awk -F ' ' '{print $2}' )
-	BLUE_DEVICE2=$( bluetoothctl info | awk '/Alias/' | awk -F ' ' '{print $3}' )
 	BLUE_STATUS=""
 	
 	if [ $BLUE_DEVICE1 ]; then
-	        BLUE_STATUS=":$BLUE_DEVICE1 $BLUE_DEVICE2"
+	        BLUE_STATUS=":$BLUE_DEVICE1"
 	else
 		BLUE_STATUS=":NDC"
 	fi
