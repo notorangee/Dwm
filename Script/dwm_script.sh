@@ -23,7 +23,7 @@ while true; do
 	
 	#电池定义
 	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
-	BAT_COUNT=$(acpi -b | awk -F ',' '{print $2}' | awk -F '%' '{print $1}' | awk -F ' ' 'END{print $1}')
+	BAT_COUNT=$(acpi -b | grep "0:" | cut -d ',' -f 2 | sed 's/[[:space:]]//g' | cut -d% -f1)
 	case $BAT_COUNT in
 	            10|[0-9])  BAT_ICON="ﴏ" ;;
 	        2[0-5]|1[1-9]) BAT_ICON="" ;;
