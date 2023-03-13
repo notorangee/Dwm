@@ -2,6 +2,7 @@
 
 #变量初始化
 NotifyCount=0
+BAT_NUM=0
 
 #状态栏脚本定义 
 while true; do
@@ -19,12 +20,17 @@ while true; do
 	        then
 			WIFI_STATUS="$WIFI_ICON:$percentage%"
 	        fi
-	fi
+  fi
 	
 	#电池定义
 	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
 	BAT_COUNT=$(acpi -b | grep "0:" | cut -d ',' -f 2 | sed 's/[[:space:]]//g' | cut -d% -f1)
-	case $BAT_COUNT in
+	if [[ $BAT_COUNT -lt $BAT_NUM && "$BAT_ISWORK" = "Discharging" ]]; then
+		BAT_NUM=$BAT_COUNT
+	elif [[ $BAT_COUNT -gt $BAT_NUM && "$BAT_ISWORK" = "Charging" ]]; then
+		BAT_NUM=$BAT_COUNT
+	fi
+	case $BAT_NUM in
 	            10|[0-9])  BAT_ICON="ﴏ" ;;
 	        2[0-5]|1[1-9]) BAT_ICON="" ;;
 	        3[0-9]|2[6-9]) BAT_ICON="" ;;
@@ -34,7 +40,7 @@ while true; do
 	        9[0-5]|8[6-9]) BAT_ICON="" ;;
 	           100|9[6-9]) BAT_ICON="" ;;
 	esac
-	BAT_STATUS="$BAT_ICON:$BAT_COUNT%"
+	BAT_STATUS="$BAT_ICON:$BAT_NUM%"
 	##低电量提示
 	if [[ $BAT_COUNT -lt 10 && "$BAT_ISWORK" = "Discharging" ]]; then
 	        xsetroot -name "设备电量不足10%"
