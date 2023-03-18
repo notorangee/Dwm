@@ -27,7 +27,7 @@ while true; do
 	BAT_COUNT=$(acpi -b | grep "0:" | cut -d ',' -f 2 | sed 's/[[:space:]]//g' | cut -d% -f1)
 	if [[ $BAT_COUNT -lt $BAT_NUM && "$BAT_ISWORK" = "Discharging" ]]; then
 		BAT_NUM=$BAT_COUNT
-	elif [[ $BAT_COUNT -gt $BAT_NUM && "$BAT_ISWORK" = "Charging" ]]; then
+	elif [[ $BAT_COUNT -gt $BAT_NUM && ( "$BAT_ISWORK" = "Charging" || "$BAT_ISWORK" = "Not charging" ) ]]; then
 		BAT_NUM=$BAT_COUNT
 	fi
 	case $BAT_NUM in
