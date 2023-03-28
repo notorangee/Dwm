@@ -6,9 +6,7 @@ BAT_NUM=0
 
 #状态栏脚本定义 
 while true; do
-	#壁纸重载
-	#nitrogen --restore
-	
+
 	#WIFI定义
 	WIFI_ICON=''
 	NO_WIFI_ICON='睊'
@@ -23,9 +21,9 @@ while true; do
   fi
 	
 	#电池定义
-	BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
+	BAT_ISWORK=$(cat /sys/class/power_supply/BAT1/status)
 	BAT_COUNT=$(acpi -b | grep "0:" | cut -d ',' -f 2 | sed 's/[[:space:]]//g' | cut -d% -f1)
-	if [[ $BAT_COUNT -lt $BAT_NUM && "$BAT_ISWORK" = "Discharging" ]]; then
+  if [[ $BAT_NUM == 0 || ( $BAT_COUNT -lt $BAT_NUM && "$BAT_ISWORK" = "Discharging" ) ]]; then
 		BAT_NUM=$BAT_COUNT
 	elif [[ $BAT_COUNT -gt $BAT_NUM && ( "$BAT_ISWORK" = "Charging" || "$BAT_ISWORK" = "Not charging" ) ]]; then
 		BAT_NUM=$BAT_COUNT
@@ -42,8 +40,8 @@ while true; do
 	esac
 	BAT_STATUS="$BAT_ICON:$BAT_NUM%"
 	##低电量提示
-	if [[ $BAT_COUNT -lt 10 && "$BAT_ISWORK" = "Discharging" ]]; then
-	        xsetroot -name "设备电量不足10%"
+	if [[ $BAT_COUNT -lt 15 && "$BAT_ISWORK" = "Discharging" ]]; then
+	        xsetroot -name "设备电量不足15%"
 		NotifyCount=$((${NotifyCount} + 1))
 		if [ $NotifyCount -eq 10 ]; then
 			notify-send "电池电量已不足！剩余电量$BAT_COUNT%"
@@ -69,11 +67,11 @@ while true; do
 	else
 		VOL="xx%"
 	fi
-	VOL_STATUS="ﰝ:$VOL"
+	VOL_STATUS="ﰝ:$VOL%"
 
 	#背光定义
-	#BACKLIGHT_INFO=`echo "scale=1; ($( cat /sys/class/backlight/nvidia_0/actual_brightness ) / 50) * 100" | bc`
-	#BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
+	BACKLIGHT_INFO=`echo "scale=1; ($( cat /sys/class/backlight/intel_backlight/brightness ) / 15) * 1" | bc`
+	BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
 
 	#时间定义
 	LOCALTIME=$( date +'%F %A %H:%M' )
@@ -86,10 +84,11 @@ while true; do
 	fi
 	
 	#状态栏样式定义
-	xsetroot -name " $BLUE_STATUS $WIFI_STATUS $VOL_STATUS $BAT_STATUS $INPUT_STATUS $LOCALTIME "
-	sleep 1s
+	xsetroot -name " $BLUE_STATUS $WIFI_STATUS $VOL_STATUS $BACKLIGHT $BAT_STATUS $INPUT_STATUS $LOCALTIME " 2>/dev/null
 	if [ $? -ne 0 ]; then
 		break;
 	fi
-done &
+
+	sleep 1s
+done
 
