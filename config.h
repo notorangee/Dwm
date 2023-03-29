@@ -75,7 +75,6 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *termcmd[]  = { "alacritty", NULL };
 /*rofi配置*/
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
-static const char *notecmd[] = { "xournalpp", NULL };
 /*alacritty小窗口*/
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
@@ -83,21 +82,19 @@ static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL }
 static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
 static const char *musiccmd[] = {"alacritty", "-e", "ncmpcpp", NULL };
 /*flameshot截图*/
-static const char *flameshot[]   = {"flameshot", "gui", NULL };
+// static const char *flameshot[]   = {"flameshot", "gui", NULL };
 /*屏幕亮度调节*/
 static const char *backlightUp[] = { "xbacklight", "-inc", "5", NULL };
 static const char *backlightDown[] = { "xbacklight", "-dec", "5", NULL };
 /*系统音量调节*/
-static const char *soundUp[] = { "pulseaudio-ctl", "up", NULL };
-static const char *soundDown[] = { "pulseaudio-ctl", "down", NULL };
-static const char *soundToggle[] = { "pulseaudio-ctl", "mute", NULL };
+// static const char *soundUp[] = { "pulseaudio-ctl", "up", NULL };
+// static const char *soundDown[] = { "pulseaudio-ctl", "down", NULL };
+// static const char *soundToggle[] = { "pulseaudio-ctl", "mute", NULL };
 /*托盘开启关闭脚本*/
-static const char *trayer[] = { "/home/orange/Dwm/Scripts/trayer.sh", NULL };
-/*熄屏*/
-static const char *forceoffcmd[] = { "/home/orange/Dwm/Scripts/forceoff.sh", NULL };
+static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/
-static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/i3lock.sh", NULL };
-static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/forceoff_lock.sh", NULL };
+static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
+static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
 /*重启*/
@@ -109,21 +106,24 @@ static Key keys[] = {
 	{ MODKEY,	                      XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
 	/*Super*/
-	{ MODKEY,                       XK_F1,     spawn,          {.v = soundToggle } },
-        { MODKEY,                 XK_F2,     spawn,          {.v = soundDown } },
-        { MODKEY,                 XK_F3,     spawn,          {.v = soundUp } },
-	{ MODKEY,                       XK_F4,     spawn,  	   {.v = bluetuithcmd } },
-        { MODKEY,                 XK_F5,     spawn,          {.v = backlightDown } },
-        { MODKEY,                 XK_F6,     spawn,          {.v = backlightUp } },
-        { MODKEY,                 XK_F7,     spawn,          {.v = slockcmd } } ,
-        { MODKEY,                 XK_F8,     spawn,          {.v = trayer } } ,
-        { MODKEY,                 XK_F9,     spawn,          {.v = musiccmd } } ,
-        { MODKEY,                 XK_F10,    spawn,          {.v = forceoffcmd } } ,
-	      { MODKEY,             		XK_Escape, spawn,          {.v = flameshot } }, //Esc
-											
+	// { MODKEY,                       XK_F1,     spawn,          {.v = soundToggle } },
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+4 dwmblocks") },
+  // { MODKEY,                       XK_F2,     spawn,          {.v = soundDown } },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+4 dwmblocks") },
+  // { MODKEY,                       XK_F3,     spawn,          {.v = soundUp } },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+4 dwmblocks") },
+	{ MODKEY,                       XK_F4,     spawn,  	       {.v = bluetuithcmd } },
+  { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
+  { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
+  { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
+  { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
+  { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
+  { MODKEY,                       XK_F10,    spawn,          {.v = forceoffandclockcmd } } ,
+	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+8 dwmblocks") }, //Esc
+
 	/*Super+Shift*/
-        { MODKEY|ShiftMask,       XK_F1,     spawn,          {.v = poweroffcmd } }, 
-        { MODKEY|ShiftMask,       XK_F2,     spawn,          {.v = rebootcmd } }, 
+  { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
+  { MODKEY|ShiftMask,             XK_F2,     spawn,          {.v = rebootcmd } }, 
 
 	{ MODKEY,                       XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -141,7 +141,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 	{ MODKEY|ShiftMask,	            XK_k,      aspectresize,   {.i = +24} },
-        { MODKEY|ShiftMask,       XK_j,      aspectresize,   {.i = -24} },
+  { MODKEY|ShiftMask,             XK_j,      aspectresize,   {.i = -24} },
 	{ MODKEY,                       XK_space,  moveplace,      {.ui = WIN_C  }},
 	{ MODKEY,                       XK_Up,     moveplace,      {.ui = WIN_N  }},
 	{ MODKEY,                       XK_Left,   moveplace,      {.ui = WIN_W  }},
@@ -193,10 +193,8 @@ static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = notecmd} }, // 左键点击中间弹出笔记应用
+	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = dmenucmd} }, // 左键点击中间弹出rofi应用
 	{ ClkWinTitle,          0,              Button2,        killclient,     {0} }, // 中键点击中间退出应用
-	// { ClkStatusText,        0,              Button1,        spawn,          {.v = dmenucmd} }, //左键点击右边弹出rofi
-	// { ClkStatusText,        0,              Button2,        spawn,          {.v = flameshot} },
 
   /* dwmblock patch*/
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
