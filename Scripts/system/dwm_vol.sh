@@ -1,8 +1,13 @@
 #! /bin/sh
 
 case $BUTTON in
-	1) notify-send "vol1" ;;
-	2) notify-send "vol2" ;;
+  1) (mpc pause-if-playing >/dev/null;
+    if [[ $? -ne 0 ]]; then
+      mpc play >/dev/null && notify-send "󰝚播放音乐" "$(printf '%s %s %s\n' $(mpc current))"
+    else
+      mpc pause >/dev/null && notify-send "󰝚暂停音乐" "$(printf '%s %s %s\n' $(mpc current))" 
+      fi) ;;
+	2) pulseaudio-ctl mute && notify-send "󰎊" "静音" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

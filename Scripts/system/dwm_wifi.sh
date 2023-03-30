@@ -1,10 +1,22 @@
 #! /bin/sh
 
-WIFI_INFO=$(nmcli device wifi list)
+WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
+WIFI_getInfo=$(nmcli device show wlan0 | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
+  -e "GENERAL.HWADDR" -e "IP4.GATEWAY" | sort | awk -F ": +" '{print $2}')
+
+i = 0
+WIFI_Info(){
+  for row in ${WIFI_getInfo}
+  do
+    printf "\t\t%-5s%-1s\n" ${WIFI_Dispose[$i]} ${row}
+    i=`expr $i + 1`
+  done
+}
 
 case $BUTTON in
-	1) notify-send "$WIFI_INFO" ;;
-	2) notify-send "wifi2" ;;
+  1) notify-send "$(printf '\t\t%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
+  2) notify-send "$((nmcli device wifi rescan && nmcli device wifi list && nmcli device wifi \
+    connect AvaOra password pom59641874\"@\" ) >/dev/null)" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
