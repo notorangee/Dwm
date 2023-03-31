@@ -2,15 +2,27 @@
 
 #蓝牙定义
 BLUE_DEVICES=$(bluetoothctl devices | awk '{print $2}')
-BLUE_STATUS=""
+BLUE_ICON=""
+BLUE_STATUS="NDC"
 
 BLUE_CHECK(){
   for device in ${BLUE_DEVICES}
   do
     if [[ "$( bluetoothctl info $device | grep 'Connected' | awk -F ': ' '{print $2}')" = "yes" ]]; then
-      printf "\t\t\t   %s\n" "$( bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}' )"
+      local device_name=$(bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}')
+      if [[ "$device_name" = "Keyboard K380" ]]; then
+        $(xset r rate 300 30) #设置蓝牙键盘在唤醒时的响应速度
+      fi
+      if [[ $BUTTON == 1 ]]; then
+        printf "\t\t\t   %s\n" "${device_name}"
+      fi
+      BLUE_ICON=""
+      BLUE_STATUS="CTD"
     fi
   done
+  if [[ "$BLUE_STATUS" = "NDC" && $BUTTON == 1 ]]; then
+    printf "\t\t\t       %s\n" "无设备连接"
+  fi
 }
 
 case $BUTTON in
@@ -19,10 +31,6 @@ case $BUTTON in
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-if [ "$BLUE_DEVICES" ]; then
-        BLUE_STATUS=":CTD"
-else
-	BLUE_STATUS=":NDC"
-fi
+BLUE_CHECK
 
-printf "%s\n" "${BLUE_STATUS}"
+printf "%s\n" "${BLUE_ICON}:${BLUE_STATUS}"

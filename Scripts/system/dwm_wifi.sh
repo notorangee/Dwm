@@ -4,7 +4,7 @@ WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
 WIFI_getInfo=$(nmcli device show wlan0 | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
   -e "GENERAL.HWADDR" -e "IP4.GATEWAY" | sort | awk -F ": +" '{print $2}')
 
-i = 0
+i=0
 WIFI_Info(){
   for row in ${WIFI_getInfo}
   do
@@ -13,10 +13,18 @@ WIFI_Info(){
   done
 }
 
+WIFI_CONNECTION(){
+  nmcli device wifi rescan && nmcli device wifi list >/dev/null && nmcli device wifi \
+    connect AvaOra password pom59641874\"@\" >/dev/null && printf '\t\t       %s\n' '连接到AvaOra'
+  if [[ $? -ne 0 ]]; then
+    nmcli device wifi connect A601_5G password 12345678@601 >/dev/null \
+      && printf '\t%s\n' '未发现AvaOra! 连接到A601_5G'
+  fi
+}
+
 case $BUTTON in
   1) notify-send "$(printf '\t\t%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
-  2) notify-send "$((nmcli device wifi rescan && nmcli device wifi list && nmcli device wifi \
-    connect AvaOra password pom59641874\"@\" ) >/dev/null)" ;;
+  2) notify-send "$(printf '\t\t%s\n' 'Wifi连接信息')" "$(WIFI_CONNECTION)" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
