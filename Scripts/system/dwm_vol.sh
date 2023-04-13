@@ -11,9 +11,9 @@ case $BUTTON in
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-VOL_SWITCH=$( pulseaudio-ctl full-status | awk -F " " '{print $2}' )
+VOL_SWITCH=$( pulseaudio-ctl full-status | awk -F " " '{print $2}' 2>/dev/null )
 if [ "$VOL_SWITCH" = "no" ];then
-	VOL=$( pulseaudio-ctl full-status | awk -F " " '{print $1}' )
+	VOL=$( pulseaudio-ctl full-status | awk -F " " '{print $1}' 2>/dev/null )
 else
 	VOL="xx"
 fi

@@ -1,20 +1,20 @@
 #! /bin/sh
 
 #蓝牙定义
-BLUE_DEVICES=$(bluetoothctl devices | awk '{print $2}')
+BLUE_DEVICES=$(bluetoothctl devices | awk '{print $2}' 2>/dev/null)
 BLUE_ICON=""
 BLUE_STATUS="NDC"
 
 BLUE_CHECK(){
   for device in ${BLUE_DEVICES}
   do
-    if [[ "$( bluetoothctl info $device | grep 'Connected' | awk -F ': ' '{print $2}')" = "yes" ]]; then
-      local device_name=$(bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}')
+    if [[ "$( bluetoothctl info $device | grep 'Connected' | awk -F ': ' '{print $2}' 2>/dev/null)" = "yes" ]]; then
+      local device_name=$(bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}' 2>/dev/null)
       if [[ "$device_name" = "Keyboard K380" ]]; then
-        $(xset r rate 300 30) #设置蓝牙键盘在唤醒时的响应速度
+        xset r rate 300 30 2>/dev/null #设置蓝牙键盘在唤醒时的响应速度
       fi
       if [[ $BUTTON == 1 ]]; then
-        printf "\t\t\t   %s\n" "${device_name}"
+        printf "\t\t%s\n" "${device_name}"
       fi
       BLUE_ICON=""
       BLUE_STATUS="CTD"
@@ -27,7 +27,7 @@ BLUE_CHECK(){
 
 case $BUTTON in
   1) notify-send "$(printf '\t\t\t%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
-	2) notify-send "蓝牙管理" && blueman-manager & ;;
+	2) blueman-manager ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

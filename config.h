@@ -81,9 +81,6 @@ static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL }
 /*Bluetuith小窗口*/
 static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
 static const char *musiccmd[] = {"alacritty", "-e", "ncmpcpp", NULL };
-/*屏幕亮度调节*/
-static const char *backlightUp[] = { "xbacklight", "-inc", "5", NULL };
-static const char *backlightDown[] = { "xbacklight", "-dec", "5", NULL };
 /*托盘开启关闭脚本*/
 static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/
@@ -100,17 +97,17 @@ static Key keys[] = {
 	{ MODKEY,	                      XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
 	/*Super*/
-  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+5 dwmblocks") },
 	{ MODKEY,                       XK_F4,     spawn,  	       {.v = bluetuithcmd } },
-  { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
-  { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("light -A 5; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("light -U 5; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
   { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
   { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
   { MODKEY,                       XK_F10,    spawn,          {.v = forceoffandclockcmd } } ,
-	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+9 dwmblocks") }, //Esc
+	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+10 dwmblocks") }, //Esc
 
 	/*Super+Shift*/
   { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
