@@ -1,20 +1,20 @@
 #! /bin/sh
 
-BAT_Charge=$(cat /sys/class/power_supply/BAT1/charge_full)
-BAT_Charge_Design=$(cat /sys/class/power_supply/BAT1/charge_full_design)
-BAT_ISWORK=$(cat /sys/class/power_supply/BAT1/status)
-BAT_COUNT=$(cat /sys/class/power_supply/BAT1/capacity)
+BAT_Charge=$(cat /sys/class/power_supply/BAT0/energy_full)
+BAT_Charge_Design=$(cat /sys/class/power_supply/BAT0/energy_full_design)
+BAT_ISWORK=$(cat /sys/class/power_supply/BAT0/status)
+BAT_COUNT=$(cat /sys/class/power_supply/BAT0/capacity)
 BAT_Health=$(echo "scale=2;($BAT_Charge/$BAT_Charge_Design) * 100 " | bc 2>/dev/null)
 BAT_Time="$(acpi -b | grep -e 'Battery 0: ' | cut -d ',' -f 3 | awk -F ' ' '{print $1}' 2>/dev/null)"
 BAT_ISCHAR=$([[ "$BAT_ISWORK" = "Discharging" ]] && echo "正在放电" || echo "正在充电")
 BAT_Time_Info=$([[ "$BAT_ISWORK" = "Discharging" ]] && echo "预计"${BAT_Time}"后电量耗尽" \
-  || echo "预计"${BAT_Time}"后充满")
+  || ([[ "$BAT_ISWORK" = "Full" ]] && echo "电池已充满" || echo "预计"${BAT_Time}"后充满"))
 export BAT_NUM=0
 
 case $BUTTON in
   1) notify-send "$(printf '\t\t\t%s\n' '电池信息')" "$(printf '\t\t\t    %s%s\n' \
-    '电池状态:' $BAT_ISCHAR)""$(printf '\n\t\t\t    %s\t%s\n' '电池健康度:' $(printf '\t%d%s' \
-    ${BAT_Health} %))""$(printf '\n\t\t\t  %s\n' ${BAT_Time_Info})";;
+    '电池状态:' $BAT_ISCHAR)""$(printf '\n\t\t\t    %s%s\n' '电池健康度:' $(printf '\t%d%s' \
+    ${BAT_Health} %))""$(printf '\n\t\t\t    %s\n' ${BAT_Time_Info})";;
 	2) notify-send "bat2" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac

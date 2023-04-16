@@ -7,7 +7,7 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=24:type=Black:antialias=true:autohint=true" };
+static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=18:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
@@ -101,8 +101,8 @@ static Key keys[] = {
   { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+5 dwmblocks") },
   { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+5 dwmblocks") },
 	{ MODKEY,                       XK_F4,     spawn,  	       {.v = bluetuithcmd } },
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("light -A 5; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("light -U 5; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("light -U 5; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("light -A 5; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
   { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
   { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,

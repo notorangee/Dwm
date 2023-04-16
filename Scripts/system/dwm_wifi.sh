@@ -38,7 +38,7 @@ WIFI_Device=$( cat /proc/net/wireless | awk 'END{print $0}' | awk -F ':' '{print
 if [ $WIFI_Device = "wlan0" ]; then
   if [ !$percentage ]; then
     
-    if ping -c 1 archlinux.org >/dev/null; then
+    if $(ping -c 1 archlinux.org >/dev/null); then
 	    WIFI_STATUS="$WIFI_ICON:$percentage%"
     else
 	    WIFI_STATUS="$NO_WIFI_ICON:$percentage%"
