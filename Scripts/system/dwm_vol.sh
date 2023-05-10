@@ -7,7 +7,7 @@ case $BUTTON in
     else
       mpc pause >/dev/null && notify-send "󰝚暂停音乐" "$(printf '%s %s %s\n' $(mpc current))" 
       fi) ;;
-	2) pulseaudio-ctl mute && notify-send "󰎊" "静音" ;;
+	2) mpc next && notify-send "󰝚下一首音乐" "$(printf '%s %s %s\n' $(mpc current))" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
