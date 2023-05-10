@@ -322,6 +322,8 @@ static int oldsignal = -1;
 static int sw, sh;      /* X display screen geometry width, height */
 static int bh, blw = 0; /* bar geometry */
 static int lrpad;       /* sum of left and right padding for text */
+static int vp;               /* vertical padding for bar */
+static int sp;               /* side padding for bar */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent])(XEvent *) = {
@@ -618,8 +620,8 @@ void buttonpress(XEvent *e) {
       arg.ui = 1 << i;
     } else if (ev->x < x + blw)
       click = ClkLtSymbol;
-		  else if (ev->x > selmon->ww - statusw) {
-			x = selmon->ww - statusw;
+		  else if (ev->x > selmon->ww - statusw - 2 * sp) {
+			x = selmon->ww - statusw - 2 * sp;
       click = ClkStatusText;
 			statussig = 0;
 			for (text = s = stext; *s && x <= ev->x; s++) {
@@ -752,7 +754,7 @@ void configurenotify(XEvent *e) {
         for (c = m->clients; c; c = c->next)
           if (c->isfullscreen)
             resizeclient(c, m->mx, m->my, m->mw, m->mh);
-				XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, m->ww, bh);
+				XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp, m->ww - 2 * sp, bh);
       }
       focus(NULL);
       arrange(NULL);
@@ -904,14 +906,14 @@ void drawbar(Monitor *m) {
 				ch = *s;
 				*s = '\0';
 				tw = TEXTW(text) - lrpad;
-				drw_text(drw, m->ww - statusw + x, 0, tw, bh, 0, text, 0);
+				drw_text(drw, m->ww - statusw + x - 2 * sp, 0, tw, bh, 0, text, 0);
 				x += tw;
 				*s = ch;
 				text = s + 1;
 			}
 		}
 		tw = TEXTW(text) - lrpad + 2;
-		drw_text(drw, m->ww - statusw + x, 0, tw, bh, 0, text, 0);
+		drw_text(drw, m->ww - statusw + x - 2 * sp, 0, tw, bh, 0, text, 0);
 		tw = statusw;
   }
 
@@ -939,11 +941,11 @@ void drawbar(Monitor *m) {
   if ((w = m->ww - tw - x) > bh) {
     drw_setscheme(drw, scheme[SchemeNorm]);
     if (m->sel) {
-			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+			drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
       if (m->sel->isfloating)
         drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
     } else {
-      drw_rect(drw, x, 0, w, bh, 1, 1);
+      drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
     }
   }
   drw_map(drw, m->barwin, 0, 0, m->ww, bh);
@@ -2036,6 +2038,8 @@ void setup(void) {
     die("no fonts could be loaded.");
   lrpad = drw->fonts->h;
   bh = drw->fonts->h + 2;
+  sp = sidepad;
+  vp = (topbar == 1) ? vertpad : - vertpad;
   updategeom();
 
   /* init atoms */
@@ -2351,7 +2355,7 @@ void togglebar(const Arg *arg) {
   selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] =
       !selmon->showbar;
   updatebarpos(selmon);
-	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
+	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx + sp, selmon->by + vp, selmon->ww - 2 * sp, bh);
   arrange(selmon);
 }
 
@@ -2505,7 +2509,7 @@ void updatebars(void) {
   for (m = mons; m; m = m->next) {
     if (m->barwin)
       continue;
-    m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww,
+    m->barwin = XCreateWindow(dpy, root, m->wx + sp, m->by + vp, m->ww - 2 * sp,
                               bh, 0, depth, InputOutput, visual,
                               CWOverrideRedirect | CWBackPixel | CWBorderPixel |
                                   CWColormap | CWEventMask,
@@ -2520,11 +2524,11 @@ void updatebarpos(Monitor *m) {
   m->wy = m->my;
   m->wh = m->mh;
   if (m->showbar) {
-		m->wh -= bh;
-		m->by = m->topbar ? m->wy : m->wy + m->wh;
-		m->wy = m->topbar ? m->wy + bh : m->wy;
+    m->wh = m->wh - vertpad - bh;
+    m->by = m->topbar ? m->wy : m->wy + m->wh + vertpad;
+    m->wy = m->topbar ? m->wy + bh + vp : m->wy;
   } else
-    m->by = -bh;
+    m->by = -bh - vp;
 }
 
 void updateclientlist() {
