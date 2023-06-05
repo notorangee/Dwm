@@ -88,6 +88,8 @@ static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NUL
 /*锁屏*/
 static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
+/*休眠*/
+static const char *hibernatecmd[] = { "systemctl", "hibernate", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
 /*重启*/
@@ -112,6 +114,7 @@ static Key keys[] = {
 	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+10 dwmblocks") }, //Esc
 
 	/*Super+Shift*/
+	{ MODKEY|ShiftMask,             XK_Escape, spawn,          {.v = hibernatecmd } }, //休眠
   { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
   { MODKEY|ShiftMask,             XK_F2,     spawn,          {.v = rebootcmd } }, 
 
