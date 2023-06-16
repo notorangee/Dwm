@@ -1,8 +1,13 @@
 #! /bin/sh
 
 #背光定义
-# OpenGL renderer string: AMD Radeon Graphics (renoir, LLVM 15.0.7, DRM 3.52, 6.3.5-zen1-1-zen)
-BACKLIGHT_INFO=$( echo "scale=1; ($( cat /sys/class/backlight/nvidia_0/brightness )) * 1" | bc 2>/dev/null)
+# OpenGL vendor string: AMD
+# OpenGL vendor string: NVIDIA Corporation
+BACKLIGHT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2}' | cut -d '%' -f 1 )" = "AMD" ]] \
+  && echo "amdgpu_bl0" || echo "nvidia_0")
+BACKLIGHT_COUNT=$( cat /sys/class/backlight/$BACKLIGHT_MODE/brightness )
+BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "amdgpu_bl0" ]] && echo "scale=0; $BACKLIGHT_COUNT / 2.55" | bc \
+  || echo "scale=1; () * 1" | bc)
 BACKLIGHT_Icon="ﱧ"
 BACKLIGHT_Status="${BACKLIGHT_INFO%.*}"
 
