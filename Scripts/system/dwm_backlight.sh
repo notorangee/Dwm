@@ -7,7 +7,7 @@ BACKLIGHT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2
   && echo "amdgpu_bl0" || echo "nvidia_0")
 BACKLIGHT_COUNT=$( cat /sys/class/backlight/$BACKLIGHT_MODE/brightness )
 BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "amdgpu_bl0" ]] && echo "scale=0; $BACKLIGHT_COUNT / 2.55" | bc \
-  || echo "scale=1; () * 1" | bc)
+  || echo "scale=1; $BACKLIGHT_COUNT * 1" | bc)
 BACKLIGHT_Icon="ﱧ"
 BACKLIGHT_Status="${BACKLIGHT_INFO%.*}"
 
