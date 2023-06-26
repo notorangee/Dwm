@@ -16,6 +16,9 @@ static const char col_gray3[]       = "#e8e4e4";//灰白
 static const char col_gray4[]       = "#9b8bee";//蓝紫
 static const char col_cyan[]        = "#005577";//蓝色
 
+// dwm6.3 update
+static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+
 //alpha补丁
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;

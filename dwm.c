@@ -221,6 +221,7 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
+static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
 static pid_t getstatusbarpid();
@@ -896,6 +897,9 @@ void drawbar(Monitor *m) {
   unsigned int i, occ = 0, urg = 0;
   Client *c;
 
+  if (!m->showbar)
+    return;
+
   /* draw status first so it can be overdrawn by tags later */
   if (m == selmon) { /* status is only drawn on selected monitor */
 		char *text, *s, ch;
@@ -1054,7 +1058,7 @@ void focusstack(const Arg *arg) {
       focuswin(arg);
       return;
   }
-  if (!selmon->sel)
+  if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
     return;
   if (arg->i > 0) {
     for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->next)
@@ -2013,7 +2017,7 @@ void setmfact(const Arg *arg) {
   if (!arg || !selmon->lt[selmon->sellt]->arrange)
     return;
   f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
-  if (f < 0.1 || f > 0.9)
+  if (f < 0.05 || f > 0.95)
     return;
   selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f;
   arrange(selmon);
@@ -2153,8 +2157,7 @@ void hidewin(const Arg *arg) {
 void restorewin(const Arg *arg) {
     int i = hiddenWinStackTop;
     while (i > -1) {
-        if (HIDDEN(hiddenWinStack[i]) &&
-            hiddenWinStack[i]->tags == selmon->tagset[selmon->seltags]) {
+        if (HIDDEN(hiddenWinStack[i]) && ISVISIBLE(hiddenWinStack[i])) {
             show(hiddenWinStack[i]);
             focus(hiddenWinStack[i]);
             restack(selmon);
@@ -2184,14 +2187,13 @@ void hideotherwins(const Arg *arg) {
 void restoreotherwins(const Arg *arg) {
     int i;
     for (i = 0; i <= hiddenWinStackTop; ++i) {
-        if (HIDDEN(hiddenWinStack[i]) &&
-            hiddenWinStack[i]->tags == selmon->tagset[selmon->seltags]) {
+        if (HIDDEN(hiddenWinStack[i]) && ISVISIBLE(hiddenWinStack[i])) {
             show(hiddenWinStack[i]);
             restack(selmon);
-            memcpy(hiddenWinStack + i, hiddenWinStack + i + 1,
-                   (hiddenWinStackTop - i) * sizeof(Client *));
+            // memcpy(hiddenWinStack + i, hiddenWinStack + i + 1,
+            //        (hiddenWinStackTop - i) * sizeof(Client *));
             --hiddenWinStackTop;
-            --i;
+            // --i;
         }
     }
 }
@@ -2342,12 +2344,14 @@ void tile(Monitor *m) {
       h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
       resize(c, m->wx + m->gappx, m->wy + my, mw - (2 * c->bw) - m->gappx,
              h - (2 * c->bw), 0);
-      my += HEIGHT(c) + m->gappx;
+      if (my + HEIGHT(c) < m->wh)
+        my += HEIGHT(c) + m->gappx;
     } else {
       h = (m->wh - ty) / (n - i) - m->gappx;
       resize(c, m->wx + mw + m->gappx, m->wy + ty,
              m->ww - mw - (2 * c->bw) - 2 * m->gappx, h - (2 * c->bw), 0);
-      ty += HEIGHT(c) + m->gappx;
+      if (ty + HEIGHT(c) < m->wh)
+        ty += HEIGHT(c) + m->gappx;
     }
 }
 
