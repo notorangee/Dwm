@@ -20,7 +20,7 @@ BLUE_CHECK(){
       BLUE_STATUS="CTD"
     fi
   done
-  if [[ "$BLUE_STATUS" = "NDC" && $BUTTON == 1 ]]; then
+  if [[ "$BLUE_STATUS" = "NDC" && $BLOCK_BUTTON == 1 ]]; then
     printf "%s\n" "无设备连接"
   fi
 }
