@@ -2,7 +2,7 @@
 
 WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
 WIFI_getInfo=$(nmcli device show wlp1s0 | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
-  -e "GENERAL.HWADDR" -e "IP4.GATEWAY" | sort | awk -F ": +" '{print $2}' 2>/dev/null)
+  -e "GENERAL.HWADDR" -e "IP4.ADDRESS\[2\]" | sort | awk -F ": +" '{print $2}' 2>/dev/null)
 
 i=0
 WIFI_Info(){
