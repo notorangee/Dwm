@@ -13,24 +13,26 @@ BLUE_CHECK(){
       if [[ "$device_name" = "Keyboard K380" ]]; then
         xset r rate 300 30 2>/dev/null #设置蓝牙键盘在唤醒时的响应速度
       fi
-      if [[ $BLOCK_BUTTON == 1 ]]; then
-        printf "%s\n" "${device_name}"
+      if [[ $BLOCK_BUTTON == 1 && $BLUE_DEVICELIST ]]; then
+        BLUE_DEVICELIST="${BLUE_DEVICELIST}\n${device_name}"
+      else
+        BLUE_DEVICELIST="${device_name}"
       fi
       BLUE_ICON="󰂱"
       BLUE_STATUS="CTD"
     fi
   done
   if [[ "$BLUE_STATUS" = "NDC" && $BLOCK_BUTTON == 1 ]]; then
-    printf "%s\n" "无设备连接"
+    BLUE_DEVICELIST="无设备连接"
   fi
 }
 
+BLUE_CHECK
+
 case $BLOCK_BUTTON in
-  1) notify-send "$(printf '%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
+  1) notify-send "$(printf '%s\n' '蓝牙设备')" "$BLUE_DEVICELIST" ;;
 	2) blueman-manager ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
-
-BLUE_CHECK
 
 printf "%s\n" "${BLUE_ICON}:${BLUE_STATUS}"
