@@ -37,7 +37,7 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "󰭻", "", "" };
+static const char *tags[] = { "", "", "", "󰭻", "󰎆", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -58,8 +58,8 @@ static const int attachdirection = 5;    /* 0 default, 1 above, 2 aside, 3 below
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "",      tile },    /* first entry is default */
-	{ "",      NULL },    /* no layout function means floating behavior */
-	{ "",      monocle },
+	{ "󰈺",      NULL },    /* no layout function means floating behavior */
+	{ "",      monocle },
 };
 
 /* key definitions */
