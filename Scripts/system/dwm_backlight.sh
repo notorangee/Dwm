@@ -1,7 +1,20 @@
 #! /bin/sh
 
 #背光定义
-BACKLIGHT_INFO=`echo "scale=1; ($( cat /sys/class/backlight/intel_backlight/brightness ) / 15) * 1" | bc`
-BACKLIGHT="ﱧ:${BACKLIGHT_INFO%.*}%"
+# OpenGL vendor string: AMD
+# OpenGL vendor string: NVIDIA Corporation
+BACKLIGHT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2}' | cut -d '%' -f 1 )" = "Intel" ]] \
+  && echo "intel_backlight" || echo "nvidia_0")
+BACKLIGHT_COUNT=$( cat /sys/class/backlight/$BACKLIGHT_MODE/brightness )
+BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "intel_backlight" ]] && echo "scale=0; $BACKLIGHT_COUNT / 75" | bc \
+  || echo "scale=0; $BACKLIGHT_COUNT * 1" | bc)
+BACKLIGHT_Icon="󰝩"
+BACKLIGHT_Status="${BACKLIGHT_INFO%}"
 
-echo "${BACKLIGHT}"
+case $BLOCK_BUTTON in
+  1) notify-send "$( light -A 5 || printf '%s\n' '增大屏幕背光错误，请查看日志')" ;;
+  2) notify-send "$( light -U 5 || printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
+	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+echo "${BACKLIGHT_Icon}:${BACKLIGHT_Status}%"

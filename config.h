@@ -6,13 +6,18 @@ static const unsigned int gappx     = 3;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int vertpad            = 3;       /* vertical padding of bar */
+static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:pixelsize=24:type=Black:antialias=true:autohint=true" };
+static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=30:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
 static const char col_gray4[]       = "#9b8bee";//蓝紫
 static const char col_cyan[]        = "#005577";//蓝色
+
+// dwm6.3 update
+static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 //alpha补丁
 static const unsigned int baralpha = 0xd0;
@@ -32,7 +37,7 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "ﮠ", "", "" };
+static const char *tags[] = { "", "", "", "󰭻", "󰎆", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -46,15 +51,15 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int attachdirection = 5;    /* 0 default, 1 above, 2 aside, 3 below, 4 bottom, 5 top */
 
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "",      tile },    /* first entry is default */
-	{ "",      NULL },    /* no layout function means floating behavior */
-	{ "",      monocle },
+	{ "󰈺",      NULL },    /* no layout function means floating behavior */
+	{ "",      monocle },
 };
 
 /* key definitions */
@@ -71,7 +76,6 @@ static const Layout layouts[] = {
 #define STATUSBAR "dwmblocks"
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *termcmd[]  = { "alacritty", NULL };
 /*rofi配置*/
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
@@ -81,38 +85,38 @@ static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL }
 /*Bluetuith小窗口*/
 static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
 static const char *musiccmd[] = {"alacritty", "-e", "ncmpcpp", NULL };
-/*屏幕亮度调节*/
-static const char *backlightUp[] = { "xbacklight", "-inc", "5", NULL };
-static const char *backlightDown[] = { "xbacklight", "-dec", "5", NULL };
 /*托盘开启关闭脚本*/
 static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/
 static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
+/*休眠*/
+static const char *hibernatecmd[] = { "systemctl", "hibernate", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
 /*重启*/
 static const char *rebootcmd[]  = { "reboot", NULL };
 
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                      XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
 	/*Super*/
-  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+5 dwmblocks") },
 	{ MODKEY,                       XK_F4,     spawn,  	       {.v = bluetuithcmd } },
-  { MODKEY,                       XK_F5,     spawn,          {.v = backlightDown } },
-  { MODKEY,                       XK_F6,     spawn,          {.v = backlightUp } },
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("light -U 5; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("light -A 5; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
   { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
   { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
   { MODKEY,                       XK_F10,    spawn,          {.v = forceoffandclockcmd } } ,
-	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+9 dwmblocks") }, //Esc
+	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+10 dwmblocks") }, //Esc
 
 	/*Super+Shift*/
+	{ MODKEY|ShiftMask,             XK_Escape, spawn,          {.v = hibernatecmd } }, //休眠
   { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
   { MODKEY|ShiftMask,             XK_F2,     spawn,          {.v = rebootcmd } }, 
 
@@ -175,12 +179,13 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY,                       XK_q,      quit,            {0} },
+	{ MODKEY|ShiftMask,             XK_q,      spawn,           SHCMD("pkill dwm") },
 };
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static Button buttons[] = {
+static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
