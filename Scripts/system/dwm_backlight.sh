@@ -11,9 +11,9 @@ BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "amdgpu_bl0" ]] && echo "scale=0; $BACK
 BACKLIGHT_Icon="ﱧ"
 BACKLIGHT_Status="${BACKLIGHT_INFO%.*}"
 
-case $BUTTON in
-  1) notify-send "$( light -A 5 || printf '\t\t\t%s\n' '增大屏幕背光错误，请查看日志')" ;;
-  2) notify-send "$( light -U 5 || printf '\t\t\t%s\n' '减小屏幕背光错误，请查看日志')" ;;
+case $BLOCK_BUTTON in
+  1) notify-send "$( light -A 5 || printf '%s\n' '增大屏幕背光错误，请查看日志')" ;;
+  2) notify-send "$( light -U 5 || printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

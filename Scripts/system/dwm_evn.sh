@@ -17,7 +17,7 @@ export CLASSPATH=.:$JAVA_HOME/jre/lib/ext/mysql-connector-java-5.1.9.jar:$JAVA_H
 export LIBVA_DRIVER_NAME=nvidia
 
 xset r rate 300 30
-picom --experimental-backends -b &
+picom --experimental-backends &
 # killall fcitx5
 # fcitx5 -d &
 flameshot &

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-case $BUTTON in
+case $BLOCK_BUTTON in
 	1) notify-send "fcitx1" ;;
 	2) notify-send "fcitx2" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;

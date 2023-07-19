@@ -8,7 +8,7 @@ Open_Trayer(){
   fi
 }
 
-case $BUTTON in
+case $BLOCK_BUTTON in
   1) Open_Trayer && Trayer_Lock="true" 2>/dev/null ;;
 	2) notify-send "Trayer2" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-case $BUTTON in
+case $BLOCK_BUTTON in
   1) (mpc pause-if-playing >/dev/null;
     if [[ $? -ne 0 ]]; then
       mpc play >/dev/null && notify-send "󰝚播放音乐" "$(printf '%s %s %s\n' $(mpc current))"

@@ -14,19 +14,19 @@ BLUE_CHECK(){
         xset r rate 300 30 2>/dev/null #设置蓝牙键盘在唤醒时的响应速度
       fi
       if [[ $BUTTON == 1 ]]; then
-        printf "\t\t%s\n" "${device_name}"
+        printf "%s\n" "${device_name}"
       fi
       BLUE_ICON=""
       BLUE_STATUS="CTD"
     fi
   done
   if [[ "$BLUE_STATUS" = "NDC" && $BUTTON == 1 ]]; then
-    printf "\t\t\t       %s\n" "无设备连接"
+    printf "%s\n" "无设备连接"
   fi
 }
 
-case $BUTTON in
-  1) notify-send "$(printf '\t\t\t%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
+case $BLOCK_BUTTON in
+  1) notify-send "$(printf '%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
 	2) blueman-manager ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac

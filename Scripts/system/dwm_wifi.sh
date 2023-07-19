@@ -8,7 +8,7 @@ i=0
 WIFI_Info(){
   for row in ${WIFI_getInfo}
   do
-    printf "\t\t%-5s%-1s\n" ${WIFI_Dispose[$i]} ${row}
+    printf "%-5s%-1s\n" ${WIFI_Dispose[$i]} ${row}
     i=`expr $i + 1`
   done
 }
@@ -18,13 +18,13 @@ WIFI_CONNECTION(){
     connect AvaOra password pom59641874\"@\" >/dev/null && printf '\t\t       %s\n' '连接到AvaOra'
   if [[ $? -ne 0 ]]; then
     nmcli device wifi connect A601_5G password 12345678@601 >/dev/null \
-      && printf '\t%s\n' '未发现AvaOra! 连接到A601_5G'
+      && printf '%s\n' '未发现AvaOra! 连接到A601_5G'
   fi
 }
 
-case $BUTTON in
-  1) notify-send "$(printf '\t\t%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
-  2) notify-send "$(printf '\t\t%s\n' 'Wifi连接信息')" "$(WIFI_CONNECTION)" ;;
+case $BLOCK_BUTTON in
+  1) notify-send "$(printf '%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
+  2) notify-send "$(printf '%s\n' 'Wifi连接信息')" "$(WIFI_CONNECTION)" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
