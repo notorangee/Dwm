@@ -9,4 +9,4 @@ case $BLOCK_BUTTON in
 esac
 
 LOCALTIME=$( date +'%H:%M' 2>/dev/null )
-printf "%s\n" "${LOCALTIME}  "
+printf "%s \n" "${LOCALTIME}  "

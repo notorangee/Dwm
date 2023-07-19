@@ -2,7 +2,7 @@
 
 #蓝牙定义
 BLUE_DEVICES=$(bluetoothctl devices | awk '{print $2}' 2>/dev/null)
-BLUE_ICON=""
+BLUE_ICON="󰂲"
 BLUE_STATUS="NDC"
 
 BLUE_CHECK(){
@@ -16,7 +16,7 @@ BLUE_CHECK(){
       if [[ $BUTTON == 1 ]]; then
         printf "%s\n" "${device_name}"
       fi
-      BLUE_ICON=""
+      BLUE_ICON="󰂱"
       BLUE_STATUS="CTD"
     fi
   done

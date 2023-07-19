@@ -17,6 +17,6 @@ if [ "$VOL_SWITCH" = "no" ];then
 else
 	VOL="xx"
 fi
-VOL_STATUS="ﰝ:$VOL%"
+VOL_STATUS="󰕾:$VOL%"
 
 printf "%s\n" "$VOL_STATUS"
