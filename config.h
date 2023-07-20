@@ -91,7 +91,7 @@ static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NUL
 static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
 /*休眠*/
-static const char *hibernatecmd[] = { "systemctl", "hibernate", NULL };
+static const char *hibernatecmd[] = { "systemctl", "suspend", NULL };
 /*关机*/
 static const char *poweroffcmd[]  = { "poweroff", NULL };
 /*重启*/
@@ -179,8 +179,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY,                       XK_q,      quit,            {0} },
-	{ MODKEY|ShiftMask,             XK_q,      spawn,           SHCMD("pkill dwm") },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
 /* button definitions */

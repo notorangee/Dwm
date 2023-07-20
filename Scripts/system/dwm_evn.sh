@@ -10,6 +10,8 @@ export XMODIFIERS=@im=fcitx
 export SDL_IM_MODULE=fcitx
 export GLFW_IM_MODULE=ibus
 export _JAVA_AWT_WM_NONREPARENTING=1
+#Video Decode
+export LIBVA_DRI3_DISABLE=1
 #Java 开发环境
 # export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 # export PATH=$JAVA_HOME/bin:$PATH
