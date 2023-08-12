@@ -2303,8 +2303,18 @@ void tag(const Arg *arg) {
     selmon->sel->tags = arg->ui & TAGMASK;
     focus(NULL);
     arrange(selmon);
-    if (viewontag && ((arg->ui & TAGMASK) != TAGMASK))
-      view(arg);
+  }
+}
+
+void floattag(const Arg *arg){
+  if (selmon->sel && arg->ui & TAGMASK) {
+    if(selmon->sel->tags == ~0){
+      selmon->sel->tags = savetag;  
+    } else {
+      selmon->sel->tags = arg->ui & TAGMASK;
+    }
+    focus(NULL);
+    arrange(selmon);
   }
 }
 
@@ -2364,7 +2374,7 @@ void togglefloating(const Arg *arg) {
   selmon->sel->x =
       selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
   selmon->sel->y =
-      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
+      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2 + 14;
   arrange(selmon);
 }
 
