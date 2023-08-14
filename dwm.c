@@ -132,7 +132,7 @@ struct Client {
   int oldx, oldy, oldw, oldh;
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
-  unsigned int tags;
+  unsigned int tags, oldtags;
   int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
   Client *next;
   Client *snext;
@@ -271,6 +271,7 @@ static void restorewin(const Arg *arg);
 static void hideotherwins(const Arg *arg);
 static void restoreotherwins(const Arg *arg);
 static int issinglewin(const Arg *arg);
+static void floattag(const Arg *arg);
 static void focuswin(const Arg *arg);
 static void showhide(Client *c);
 static void sigchld(int unused);
@@ -2196,7 +2197,7 @@ int issinglewin(const Arg *arg) {
     int cot = 0;
     int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if (ISVISIBLE(c) && !HIDDEN(c) && c->tags == tag) {
+        if (ISVISIBLE(c) && !HIDDEN(c) && (c->tags == (~0 & TAGMASK) || c->tags == tag)) {
             cot++;
         }
         if (cot > 1) {
@@ -2303,18 +2304,25 @@ void tag(const Arg *arg) {
     selmon->sel->tags = arg->ui & TAGMASK;
     focus(NULL);
     arrange(selmon);
+    if(viewontag && ((arg->ui & TAGMASK) != TAGMASK))
+			view(arg);
   }
 }
 
 void floattag(const Arg *arg){
   if (selmon->sel && arg->ui & TAGMASK) {
-    if(selmon->sel->tags == ~0){
-      selmon->sel->tags = savetag;  
+    if(selmon->sel->oldtags == 0)
+      selmon->sel->oldtags = selmon->sel->tags;
+    if(selmon->sel->tags == (arg->ui & TAGMASK)){
+      selmon->sel->tags = selmon->sel->oldtags;  
     } else {
+      selmon->sel->oldtags = selmon->sel->tags;  
       selmon->sel->tags = arg->ui & TAGMASK;
     }
     focus(NULL);
     arrange(selmon);
+    if(viewontag && ((arg->ui & TAGMASK) != TAGMASK))
+			view(arg);
   }
 }
 
