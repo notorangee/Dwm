@@ -15,8 +15,9 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/jre/lib/ext/mysql-connector-java-5.1.9.jar:$JAVA_HOME/jre/lib/ext/c3p0-0.9.1.2.jar:$JAVA_HOME/jre/lib/ext/druid-1.2.8.jar:$JAVA_HOME/jre/lib/ext/commons-dbutils-1.7.jar:$JAVA_HOME/jre/lib/ext/dom4j-2.1.3.jar:/usr/share/tomcat8/lib/servlet-api.jar
 export LIBVA_DRIVER_NAME=nvidia
+export LIBVA_DRI3_DISABLE=1
 
-xset r rate 300 30
+# xset r rate 300 30
 picom --experimental-backends &
 # killall fcitx5
 # fcitx5 -d &
