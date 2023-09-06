@@ -25,6 +25,7 @@ flameshot &
 pulseaudio --start
 # caffeine start -a &
 nitrogen --restore &
+onboard &
 # pos &
 dwmblocks &
 # prime-offload

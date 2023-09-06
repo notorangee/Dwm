@@ -1,7 +1,7 @@
 #! /bin/sh
 
 WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
-WIFI_getInfo=$(nmcli device show wlan0 | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
+WIFI_getInfo=$(nmcli device show wlp1s0 | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
   -e "GENERAL.HWADDR" -e "IP4.ADDRESS\[1\]" | sort | awk -F ": +" '{print $2}' 2>/dev/null)
 
 i=0
@@ -35,7 +35,7 @@ WIFI_STATUS="$NO_WIFI_ICON:0%"
 percentage="$(grep "^\s*w" /proc/net/wireless | awk '{ print "", int($3 * 100 / 70)}'\
   | xargs | awk '{print $1 }' 2>/dev/null)"
 WIFI_Device=$( cat /proc/net/wireless | awk 'END{print $0}' | awk -F ':' '{print $1}' 2>/dev/null )
-if [ $WIFI_Device = "wlan0" ]; then
+if [ $WIFI_Device = "wlp1s0" ]; then
   if [ !$percentage ]; then
     
     if $(ping -c 1 archlinux.org >/dev/null); then
