@@ -10,6 +10,9 @@ BLUE_CHECK(){
   do
     if [[ "$( bluetoothctl info $device | grep 'Connected' | awk -F ': ' '{print $2}' 2>/dev/null)" = "yes" ]]; then
       local device_name=$(bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}' 2>/dev/null)
+      if [[ "$device_name" = "Keyboard K380" ]]; then
+        xset r rate 300 30 2>/dev/null #设置蓝牙键盘在唤醒时的响应速度
+      fi
       if [[ $BLOCK_BUTTON == 1 ]]; then
         printf "%s\n" "${device_name}"
       fi
@@ -31,3 +34,4 @@ esac
 BLUE_CHECK
 
 printf "%s\n" "${BLUE_ICON}:${BLUE_STATUS}"
+
