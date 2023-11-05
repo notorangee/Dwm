@@ -99,6 +99,8 @@ static const char *musicfoxcmd[] = {"alacritty", "-t", "musicfox", "-e", "musicf
 /*锁屏*/
 static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
+/*触摸板*/
+static const char *touchpadcmd[] = { "/home/orange/Dwm/Scripts/system/touchpad.sh", NULL };
 /*休眠*/
 static const char *hibernatecmd[] = { "systemctl", "hibernate", NULL };
 /*关机*/
@@ -121,7 +123,8 @@ static const Key keys[] = {
   { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
   { MODKEY,                       XK_F8,     spawn,          {.v = musicfoxcmd } } ,
   { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
-  { MODKEY,                       XK_F10,    spawn,          {.v = forceoffandclockcmd } } ,
+  { MODKEY,                       XK_F10,    spawn,          {.v = touchpadcmd } } ,
+  { MODKEY,                       XK_F11,    spawn,          {.v = forceoffandclockcmd } } ,
 	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+10 dwmblocks") }, //Esc
 
 	/*Super+Shift*/
