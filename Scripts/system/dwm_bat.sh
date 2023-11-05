@@ -1,14 +1,14 @@
 #! /bin/sh
 
-BAT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2}' | cut -d '%' -f 1 )" = "Intel" ]] \
-  && echo "BAT1" || echo "BAT0")
+BAT_MODE=$([[ -d /sys/class/power_supply/BAT1 ]] && echo "BAT1" || echo "BAT0")
 BAT_Charge=$(cat /sys/class/power_supply/$BAT_MODE/energy_full)
 BAT_Charge_Design=$(cat /sys/class/power_supply/$BAT_MODE/energy_full_design)
 BAT_ISWORK=$(cat /sys/class/power_supply/$BAT_MODE/status)
 BAT_COUNT=$(cat /sys/class/power_supply/$BAT_MODE/capacity)
 BAT_Health=$(echo "scale=2;($BAT_Charge/$BAT_Charge_Design) * 100 " | bc 2>/dev/null)
-BAT_Time="$(acpi -b | grep -e 'Battery 0: ' | cut -d ',' -f 3 | awk -F ' ' '{print $1}' 2>/dev/null)"
-BAT_ISCHAR=$([[ "$BAT_ISWORK" = "Discharging" ]] && echo "正在放电" || echo "正在充电")
+BAT_MODE_NUM=$([[ $(acpi -b | wc -l) = 1 ]] && echo 'Battery 0: ' || echo 'Battery 1: ')
+BAT_Time=$(acpi -b | grep -e "$BAT_MODE_NUM" | cut -d ',' -f 3 | awk -F ' ' '{print $1}' 2>/dev/null)
+BAT_ISCHAR="$([[ "$BAT_ISWORK" = "Discharging" ]] && echo "正在放电" || echo "正在充电")"
 BAT_Time_Info=$([[ "$BAT_ISWORK" = "Discharging" ]] && echo "预计"${BAT_Time}"后电量耗尽" \
   || ([[ "$BAT_ISWORK" = "Full" ]] && echo "电池已充满" || echo "预计"${BAT_Time}"后充满"))
 export BAT_NUM=0

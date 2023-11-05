@@ -1,5 +1,11 @@
 #! /bin/sh
 
+case $BLOCK_BUTTON in
+  1) light -A 5 || notify-send "$( printf '%s\n' '增大屏幕背光错误，请查看日志')" ;;
+  2) light -U 5 || notify-send "$( printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
+	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
 #背光定义
 # OpenGL vendor string: AMD
 # OpenGL vendor string: NVIDIA Corporation
@@ -10,11 +16,5 @@ BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "intel_backlight" ]] && echo "scale=0; 
   || echo "scale=0; $BACKLIGHT_COUNT * 1" | bc)
 BACKLIGHT_Icon="󰝩"
 BACKLIGHT_Status="${BACKLIGHT_INFO%}"
-
-case $BLOCK_BUTTON in
-  1) notify-send "$( light -A 5 || printf '%s\n' '增大屏幕背光错误，请查看日志')" ;;
-  2) notify-send "$( light -U 5 || printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
-	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
-esac
 
 echo "${BACKLIGHT_Icon}:${BACKLIGHT_Status}%"

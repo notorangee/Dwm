@@ -401,7 +401,7 @@ void applyrules(Client *c) {
         (!r->class || strstr(class, r->class)) &&
         (!r->instance || strstr(instance, r->instance))) {
       c->isfloating = r->isfloating;
-      c->tags |= r->tags;
+      c->tags |= r->tags ? r->tags : selmon->tagset[selmon->seltags];
       for (m = mons; m && m->num != r->monitor; m = m->next)
         ;
       if (m)
@@ -1367,7 +1367,7 @@ void monocle(Monitor *m) {
     if (ISVISIBLE(c))
       n++;
   if (n > 0) /* override layout symbol */
-    snprintf(m->ltsymbol, sizeof m->ltsymbol, "");
+    snprintf(m->ltsymbol, sizeof m->ltsymbol, "");
   for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
     resize(c, m->wx + 3, m->wy + 3, m->ww - (2 * (c->bw + 3)), m->wh - (2 * (c->bw + 3)), 0);
 }
@@ -2382,7 +2382,7 @@ void togglefloating(const Arg *arg) {
   selmon->sel->x =
       selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
   selmon->sel->y =
-      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2 + 14;
+      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2 + (dwmmode ? 25 : 14);
   arrange(selmon);
 }
 

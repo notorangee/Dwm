@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
+static const unsigned int dwmmode  = 1;        /* laptop = 0 or tablet = 1 */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int gappx     = 3;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -9,7 +10,7 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int vertpad            = 3;       /* vertical padding of bar */
 static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=18:type=Black:antialias=true:autohint=true" };
+static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=34:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
@@ -44,8 +45,15 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+	/* class            instance           title            tags mask   isfloating   monitor */
+	{ "Gimp",           NULL,              NULL,                0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       NULL,                0,          0,          -1 },
+	{ "firefox",        NULL,              NULL,                0,          0,          -1 },
+	{ "Alacritty",      "Alacritty",       "musicfox",          0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "ncmpcpp",           0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "bluetuith",         0,          1,          -1 },
+	{ "wps",            "wps",             NULL,                0,          1,          -1 },
+	{ "QQ",             "qq",              NULL,                0,          1,          -1 },
 };
 
 /* layout(s) */
@@ -82,11 +90,10 @@ static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 /*alacritty小窗口*/
 static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
-/*Bluetuith小窗口*/
-static const char *bluetuithcmd[] = {"alacritty", "-e", "bluetuith", NULL };
-static const char *musiccmd[] = {"alacritty", "-e", "ncmpcpp", NULL };
-/*托盘开启关闭脚本*/
-static const char *trayer[] = { "/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
+/*其它小窗口*/
+static const char *bluetuithcmd[] = {"alacritty", "-t", "bluetuith", "-e", "bluetuith", NULL };
+static const char *musiccmd[] = {"alacritty", "-t", "ncmpcpp", "-e", "ncmpcpp", NULL };
+static const char *musicfoxcmd[] = {"alacritty", "-t", "musicfox", "-e", "musicfox", NULL };
 /*锁屏*/
 static const char *slockcmd[] = { "/home/orange/Dwm/Scripts/system/i3lock.sh", NULL };
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };
@@ -103,14 +110,14 @@ static const Key keys[] = {
 	{ MODKEY,	                      XK_Return, spawn,          {.v = termcmd } },
 	/*脚本按键绑定*/
 	/*Super*/
-  { MODKEY,                       XK_F1,     spawn,          SHCMD("pulseaudio-ctl mute; pkill -RTMIN+5 dwmblocks") },
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("pulseaudio-ctl down; pkill -RTMIN+5 dwmblocks") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("pulseaudio-ctl up; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+; pkill -RTMIN+5 dwmblocks") },
 	{ MODKEY,                       XK_F4,     spawn,  	       {.v = bluetuithcmd } },
   { MODKEY,                       XK_F5,     spawn,          SHCMD("light -U 5; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("light -A 5; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F7,     spawn,          {.v = slockcmd } } ,
-  { MODKEY,                       XK_F8,     spawn,          {.v = trayer } } ,
+  { MODKEY,                       XK_F8,     spawn,          {.v = musicfoxcmd } } ,
   { MODKEY,                       XK_F9,     spawn,          {.v = musiccmd } } ,
   { MODKEY,                       XK_F10,    spawn,          {.v = forceoffandclockcmd } } ,
 	{ MODKEY,             		      XK_Escape, spawn,          SHCMD("flameshot gui; pkill -RTMIN+10 dwmblocks") }, //Esc
