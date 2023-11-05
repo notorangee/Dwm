@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int dwmmode  = 1;        /* laptop = 0 or tablet = 1 */
+static const unsigned int dwmmode  = 0;        /* laptop = 0 or tablet = 1 */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int gappx     = 3;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -10,7 +10,9 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int vertpad            = 3;       /* vertical padding of bar */
 static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
-static const char *fonts[]          = { "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=34:type=Black:antialias=true:autohint=true" };
+static const char *fonts[]          = { dwmmode 
+                                      ? "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=34:type=Black:antialias=true:autohint=true"
+                                      : "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=18:type=Black:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白

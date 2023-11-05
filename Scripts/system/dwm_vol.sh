@@ -16,7 +16,7 @@ VOL_VAL=$(echo "scale=2;$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk -F ' ' '{p
 if [ "$VOL_SWITCH" = "MUTED" ];then
 	VOL="xx"
 else
-  VOL="$(printf '%d\n' $VOL_VAL)"
+  VOL="$(printf '%.0f\n' $VOL_VAL)"
 fi
 VOL_STATUS="󰕾:$VOL%"
 
