@@ -51,7 +51,7 @@ static const Rule rules[] = {
 	{ "Gimp",           NULL,              NULL,                0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       NULL,                0,          0,          -1 },
 	{ "firefox",        NULL,              NULL,                0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "musicfox",          0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "musicfox",          0,          0,          -1 },
 	{ "Alacritty",      "Alacritty",       "ncmpcpp",           0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "bluetuith",         0,          1,          -1 },
 	{ "wps",            "wps",             NULL,                0,          1,          -1 },
@@ -191,8 +191,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY,                       XK_q,      quit,            {0} },
-	{ MODKEY|ShiftMask,             XK_q,      spawn,           SHCMD("pkill dwm") },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
 /* button definitions */

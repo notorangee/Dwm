@@ -17,7 +17,7 @@ WIFI_Info(){
 
 WIFI_CONNECTION(){
   nmcli device wifi rescan 2>/dev/null && nmcli device wifi list >/dev/null && nmcli device wifi \
-    connect Ora password pom59641874\\@\\ hidden yes >/dev/null && printf '%s\n' '连接到Ora'
+    connect Ora password pom59641874@ hidden yes >/dev/null && printf '%s\n' '连接到Ora'
   if [[ $? -ne 0 ]]; then
     nmcli device wifi connect A601_5G password 12345678@601 >/dev/null \
       && printf '%s\n' '未发现Ora! 连接到A601_5G'
