@@ -851,7 +851,6 @@ void configurenotify(XEvent *e) {
         for (c = m->clients; c; c = c->next)
           if (c->isfullscreen)
             resizeclient(c, m->mx, m->my, m->mw, m->mh);
-				// XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp, m->ww - 2 * sp, bh);
         resizebarwin(m);
       }
       focus(NULL);
@@ -1799,7 +1798,7 @@ resizebarwin(Monitor *m) {
 	unsigned int w = m->ww;
 	if (showsystray && m == systraytomon(m) && !systrayonleft)
 		w -= getsystraywidth();
-	XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
+	XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp, w - 2 * sp, bh);
 }
 
 void resizeclient(Client *c, int x, int y, int w, int h) {
