@@ -63,7 +63,6 @@
 #define HEIGHT(X) ((X)->h + 2 * (X)->bw)
 #define TAGMASK ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X) (drw_fontset_getwidth(drw, (X)) + lrpad)
-#define OPAQUE 0xffU
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 /* XEMBED messages */
@@ -339,7 +338,6 @@ static Client *wintosystrayicon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
-static void xinitvisual();
 static void zoom(const Arg *arg);
 static void aspectresize(const Arg *arg);
 
@@ -387,11 +385,6 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
-
-static int useargb = 0;
-static Visual *visual;
-static int depth;
-static Colormap cmap;
 
 static int hiddenWinStackTop = -1;
 static Client *hiddenWinStack[100];
@@ -660,8 +653,8 @@ void buttonpress(XEvent *e) {
       arg.ui = 1 << i;
     } else if (ev->x < x + TEXTW(selmon->ltsymbol))
       click = ClkLtSymbol;
-		  else if (ev->x > selmon->ww - statusw - 2 * sp - getsystraywidth()) {
-			x = selmon->ww - statusw - 2 * sp;
+		  else if (ev->x > selmon->ww - statusw - 2 * sp - (!systrayonleft ? getsystraywidth() : 0)) {
+			x = selmon->ww - statusw - 2 * sp - (!systrayonleft ? getsystraywidth() : 0);
       click = ClkStatusText;
 			statussig = 0;
 			for (text = s = stext; *s && x <= ev->x; s++) {
@@ -1013,15 +1006,15 @@ void drawbar(Monitor *m) {
 			if ((unsigned char)(*s) < ' ') {
 				ch = *s;
 				*s = '\0';
-				tw = TEXTW(text) - lrpad / 2;
-				drw_text(drw, m->ww - statusw + x - 2 * sp - stw, 0, tw, bh, lrpad / 2 - 2, text, 0);
+				tw = TEXTW(text) - lrpad;
+				drw_text(drw, m->ww - statusw + x - 2 * sp - stw, 0, tw, bh, 0, text, 0);
 				x += tw;
 				*s = ch;
 				text = s + 1;
 			}
 		}
 		tw = TEXTW(text) - lrpad / 2 + 2;
-		drw_text(drw, m->ww - statusw + x - 2 * sp - stw, 0, tw, bh, lrpad / 2 - 2, text, 0);
+		drw_text(drw, m->ww - statusw + x - 2 * sp - (stw + 12), 0, tw, bh, lrpad / 2 - 2, text, 0);
 		tw = statusw;
   }
 
@@ -2215,8 +2208,7 @@ void setup(void) {
   sw = DisplayWidth(dpy, screen);
   sh = DisplayHeight(dpy, screen);
   root = RootWindow(dpy, screen);
-  xinitvisual();
-  drw = drw_create(dpy, screen, root, sw, sh, visual, depth, cmap);
+ 	drw = drw_create(dpy, screen, root, sw, sh);
   if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
     die("no fonts could be loaded.");
   lrpad = drw->fonts->h;
@@ -2256,7 +2248,7 @@ void setup(void) {
   /* init appearance */
   scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
   for (i = 0; i < LENGTH(colors); i++)
-    scheme[i] = drw_scm_create(drw, colors[i], alphas[i], 3);
+    scheme[i] = drw_scm_create(drw, colors[i], 3);
 	/* init system tray */
 	updatesystray();
   /* init bars */
@@ -2725,9 +2717,7 @@ void updatebars(void) {
 	unsigned int w;
   Monitor *m;
   XSetWindowAttributes wa = {.override_redirect = True,
-                             .background_pixel = 0,
-                             .border_pixel = 0,
-                             .colormap = cmap,
+		                         .background_pixmap = ParentRelative,
                              .event_mask = ButtonPressMask | ExposureMask};
   XClassHint ch = {"dwm", "dwm"};
   for (m = mons; m; m = m->next) {
@@ -2736,11 +2726,9 @@ void updatebars(void) {
 		w = m->ww;
 		if (showsystray && m == systraytomon(m))
 			w -= getsystraywidth();
-    m->barwin = XCreateWindow(dpy, root, m->wx + sp, m->by + vp, w - 2 * sp,
-                              bh, 0, depth, InputOutput, visual,
-                              CWOverrideRedirect | CWBackPixel | CWBorderPixel |
-                                  CWColormap | CWEventMask,
-                              &wa);
+		m->barwin = XCreateWindow(dpy, root, m->wx + sp, m->by + vp, w - 2 * sp, bh, 0, DefaultDepth(dpy, screen),
+				CopyFromParent, DefaultVisual(dpy, screen),
+				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
     XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
 		if (showsystray && m == systraytomon(m))
 			XMapRaised(dpy, systray->win);
@@ -3005,13 +2993,13 @@ updatesystray(void)
 	Client *i;
 	Monitor *m = systraytomon(NULL);
 	unsigned int x = m->mx + m->mw;
-	unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
+	unsigned int sw = TEXTW(stext) - 5 * (lrpad + sp);
 	unsigned int w = 1;
 
 	if (!showsystray)
 		return;
 	if (systrayonleft)
-		x -= sw + lrpad / 2;
+		x -= sw + 3;
 	if (!systray) {
 		/* init systray */
 		if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
@@ -3044,7 +3032,7 @@ updatesystray(void)
 		XMapRaised(dpy, i->win);
 		w += systrayspacing;
 		i->x = w;
-		XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h);
+		XMoveResizeWindow(dpy, i->win, i->x + 1, vp, i->w - (sp * 2), i->h - (sp * 2)); // 托盘图填充位置大小
 		w += i->w;
 		if (i->mon != m)
 			i->mon = m;
@@ -3052,7 +3040,7 @@ updatesystray(void)
 	w = w ? w + systrayspacing : 1;
 	x -= w;
 	XMoveResizeWindow(dpy, systray->win, x, m->by, w, bh);
-	wc.x = x; wc.y = m->by; wc.width = w; wc.height = bh;
+	wc.x = x - sp; wc.y = m->by + vp; wc.width = w; wc.height = bh; // 托盘背景位置大小
 	wc.stack_mode = Above; wc.sibling = m->barwin;
 	XConfigureWindow(dpy, systray->win, CWX|CWY|CWWidth|CWHeight|CWSibling|CWStackMode, &wc);
 	XMapWindow(dpy, systray->win);
@@ -3215,36 +3203,6 @@ systraytomon(Monitor *m) {
 	if(systraypinningfailfirst && n < systraypinning)
 		return mons;
 	return t;
-}
-
-void xinitvisual() {
-  XVisualInfo *infos;
-  XRenderPictFormat *fmt;
-  int nitems;
-  int i;
-
-  XVisualInfo tpl = {.screen = screen, .depth = 32, .class = TrueColor};
-  long masks = VisualScreenMask | VisualDepthMask | VisualClassMask;
-
-  infos = XGetVisualInfo(dpy, masks, &tpl, &nitems);
-  visual = NULL;
-  for (i = 0; i < nitems; i++) {
-    fmt = XRenderFindVisualFormat(dpy, infos[i].visual);
-    if (fmt->type == PictTypeDirect && fmt->direct.alphaMask) {
-      visual = infos[i].visual;
-      depth = infos[i].depth;
-      cmap = XCreateColormap(dpy, root, visual, AllocNone);
-      useargb = 1;
-      break;
-    }
-  }
-
-  XFree(infos);
-  if (!visual) {
-    visual = DefaultVisual(dpy, screen);
-    depth = DefaultDepth(dpy, screen);
-    cmap = DefaultColormap(dpy, screen);
-  }
 }
 
 void zoom(const Arg *arg) {
