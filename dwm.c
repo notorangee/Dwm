@@ -2993,13 +2993,13 @@ updatesystray(void)
 	Client *i;
 	Monitor *m = systraytomon(NULL);
 	unsigned int x = m->mx + m->mw;
-	unsigned int sw = TEXTW(stext) - 5 * (lrpad + sp);
+	unsigned int sw = TEXTW(stext) - 3 * (lrpad + sp);
 	unsigned int w = 1;
 
 	if (!showsystray)
 		return;
 	if (systrayonleft)
-		x -= sw + 3;
+		x -= sw - 5;
 	if (!systray) {
 		/* init systray */
 		if (!(systray = (Systray *)calloc(1, sizeof(Systray))))

@@ -5,9 +5,6 @@
 
 Block blocks[] = {
   /*Command*/		/*Update Interval*/	/*Update Signal*/
-	{"~/Dwm/Scripts/user/flameshot.sh",		      0,		10},
-	{"~/Dwm/Scripts/user/note.sh",		          0,		9},
-	{"~/Dwm/Scripts/user/trayer.sh",		        0,		8},
 	{"~/Dwm/Scripts/system/dwm_blue.sh",		    2,		7},
 	{"~/Dwm/Scripts/system/dwm_wifi.sh",		    30,		6},
 	{"~/Dwm/Scripts/system/dwm_vol.sh",		      5,		5},
