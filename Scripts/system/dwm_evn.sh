@@ -19,7 +19,7 @@ export LIBVA_DRI3_DISABLE=1
 export MOZ_USE_XINPUT2=1
 
 xset r rate 300 30
-picom &
+picom --experimental-backends &
 # killall fcitx5
 # fcitx5 -d &
 flameshot &
