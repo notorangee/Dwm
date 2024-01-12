@@ -58,7 +58,14 @@ static const Rule rules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
-static const int attachdirection = 1;    /* 0 default, 1 above, 2 aside, 3 below, 4 bottom, 5 top */
+static const int attachdirection = 0;    /* 0 default, 1 above, 2 aside, 3 below, 4 bottom, 5 top */
+static const int newclientathead    = 0;        /* 定义默认平铺布局新窗口在栈顶还是栈底 */
+
+/* overview */
+static const int overviewgappi           = 24;        /* overview时 窗口与边缘 缝隙大小 */
+static const int overviewgappo           = 60;        /* overview时 窗口与窗口 缝隙大小 */
+static const char *overviewtag = "OVERVIEW";
+static const Layout overviewlayout = { "",  overview };
 
 
 static const Layout layouts[] = {
@@ -66,6 +73,7 @@ static const Layout layouts[] = {
 	{ "",      tile },    /* first entry is default */
 	{ "󰈺",      NULL },    /* no layout function means floating behavior */
 	{ "",      monocle },
+  { "G",      magicgrid },
 };
 
 /* key definitions */
@@ -160,16 +168,18 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,		        XK_k,	     movekeyboard_y, {.i = -20}},
 
 	{MODKEY,			                  XK_x, 	   hidewin, 	   {0}},
-   	{MODKEY|ShiftMask, 		        XK_x, 	   restorewin, 	   {0}},
-   	{MODKEY, 			                XK_z, 	   hideotherwins,  {0}},
-   	{MODKEY|ShiftMask, 		        XK_z, 	   restoreotherwins, {0}},
+  {MODKEY|ShiftMask, 		          XK_x, 	   restorewin, 	   {0}},
+  {MODKEY, 			                  XK_z, 	   hideotherwins,  {0}},
+  {MODKEY|ShiftMask, 		          XK_z, 	   restoreotherwins, {0}},
 
 	{ MODKEY|ShiftMask,             XK_space,  zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,	                      XK_c,      killclient,     {0} },
+  { MODKEY,                       XK_a,      toggleoverview, {0} },
 	{ MODKEY,                       XK_b,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_n,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+  { MODKEY,                       XK_g,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ShiftMask,             XK_b,  	   setlayout,      {0} },
 	{ MODKEY|ShiftMask, 	          XK_f,  	   togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
