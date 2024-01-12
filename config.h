@@ -65,7 +65,7 @@ static const int newclientathead    = 0;        /* 定义默认平铺布局新�
 static const int overviewgappi           = 24;        /* overview时 窗口与边缘 缝隙大小 */
 static const int overviewgappo           = 60;        /* overview时 窗口与窗口 缝隙大小 */
 static const char *overviewtag = "OVERVIEW";
-static const Layout overviewlayout = { "",  overview };
+static const Layout overviewlayout = { "",  overview };
 
 
 static const Layout layouts[] = {
@@ -73,7 +73,7 @@ static const Layout layouts[] = {
 	{ "",      tile },    /* first entry is default */
 	{ "󰈺",      NULL },    /* no layout function means floating behavior */
 	{ "",      monocle },
-  { "G",      magicgrid },
+  { "󰃇",      magicgrid },
 };
 
 /* key definitions */
