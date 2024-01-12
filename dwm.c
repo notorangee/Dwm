@@ -3027,12 +3027,12 @@ updatesystray(void)
 	}
 	for (w = 0, i = systray->icons; i; i = i->next) {
 		/* make sure the background color stays the same */
-		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
+		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel | 0xff3f3f3fU; // 图标背景色
 		XChangeWindowAttributes(dpy, i->win, CWBackPixel, &wa);
 		XMapRaised(dpy, i->win);
 		w += systrayspacing;
 		i->x = w;
-		XMoveResizeWindow(dpy, i->win, i->x + 1, vp, i->w - (sp * 2), i->h - (sp * 2)); // 托盘图填充位置大小
+		XMoveResizeWindow(dpy, i->win, i->x + 1, vp, i->w - (sp * 2), i->h - (sp * 2)); // 托盘图标填充位置大小
 		w += i->w;
 		if (i->mon != m)
 			i->mon = m;
@@ -3046,7 +3046,7 @@ updatesystray(void)
 	XMapWindow(dpy, systray->win);
 	XMapSubwindows(dpy, systray->win);
 	/* redraw background */
-	XSetForeground(dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel);
+	XSetForeground(dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel | 0xff3f3f3fU); // 托盘背景色
 	XFillRectangle(dpy, systray->win, drw->gc, 0, 0, w, bh);
 	XSync(dpy, False);
 }
