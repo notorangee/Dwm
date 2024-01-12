@@ -54,7 +54,7 @@
 #define INTERSECT(x, y, w, h, m)                                               \
   (MAX(0, MIN((x) + (w), (m)->wx + (m)->ww) - MAX((x), (m)->wx)) *             \
    MAX(0, MIN((y) + (h), (m)->wy + (m)->wh) - MAX((y), (m)->wy)))
-#define ISVISIBLEONTAG(C, T) ((C->mon->isoverview || C->tags & T))
+#define ISVISIBLEONTAG(C, T) (((C->mon->isoverview && !(C->tags & scratchtag)) || C->tags & T))
 #define ISVISIBLE(C) ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags])
 #define HIDDEN(C) ((getstate(C->win) == IconicState))
 #define LENGTH(X) (sizeof X / sizeof X[0])
