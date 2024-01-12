@@ -43,15 +43,16 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class            instance           title            tags mask   isfloating   monitor */
-	{ "Gimp",           NULL,              NULL,                0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       NULL,                0,          0,          -1 },
-	{ "firefox",        NULL,              NULL,                0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "musicfox",          0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "ncmpcpp",           0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "bluetuith",         0,          1,          -1 },
-	{ "wps",            "wps",             NULL,                0,          1,          -1 },
-	{ "QQ",             "qq",              NULL,                0,          1,          -1 },
+	/* class            instance           title                    tags mask   isfloating   monitor */
+	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "Alacritty - AutoStart",     1 << 0,     0,          -1 },
+	{ "Google-chrome",  "google-chrome",   NULL,                        1 << 1,     0,          -1 },
+	{ "firefox",        NULL,              NULL,                        0,          0,          -1 },
+	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,          -1 },
+	{ "Alacritty",      "Alacritty",       "ncmpcpp",                   0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
+	{ "wps",            "wps",             NULL,                        0,          1,          -1 },
+	{ "QQ",             "qq",              NULL,                        0,          1,          -1 },
 };
 
 /* layout(s) */
