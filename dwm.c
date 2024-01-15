@@ -151,7 +151,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags, oldtags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -1800,8 +1800,7 @@ movekeyboard_y(const Arg *arg){
 }
 
 Client *nexttiled(Client *c) {
-  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next)
-    ;
+  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
   return c;
 }
 
@@ -1815,9 +1814,22 @@ overview(Monitor *m)
 void
 toggleoverview(const Arg *arg)
 {
-    uint target = selmon->sel ? selmon->sel->tags : selmon->tagset[selmon->seltags];
-    selmon->isoverview ^= 1;
-    view(&(Arg){ .ui = target });
+  Monitor* m;
+  Client* c;
+  uint target = selmon->sel ? selmon->sel->tags : selmon->tagset[selmon->seltags];
+  selmon->isoverview ^= 1;
+  for (m = mons; m; m = m->next) {
+    for (c = m->clients; c; c = c->next){
+      if (selmon->isoverview && c->isfullscreen){
+        c->oldfullscreen = 1;
+        setfullscreen(c, 0);
+      }else if(c->oldfullscreen) {
+        c->oldfullscreen = 0;
+        setfullscreen(c, 1);
+      }
+    }
+  }
+  view(&(Arg){ .ui = target });
 }
 
 void pop(Client *c) {
