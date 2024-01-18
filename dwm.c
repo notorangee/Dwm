@@ -3131,7 +3131,7 @@ updatesystray(void)
 	if (!showsystray)
 		return;
 	if (systrayonleft)
-		x -= sw - 5;
+		x -= sw + 5;
 	if (!systray) {
 		/* init systray */
 		if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
