@@ -1,8 +1,8 @@
 #! /bin/sh
 
 case $BLOCK_BUTTON in
-	1) notify-send "fcitx1" ;;
-	2) notify-send "fcitx2" ;;
+	1) $(fcitx5-remote -t >/dev/null) ;;
+  2) $(fcitx5-configtool) ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
