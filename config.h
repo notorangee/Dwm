@@ -207,8 +207,12 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkTagBar,            0,              Button1,        view,           {0} },
+	{ ClkTagBar,            0,              Button2,        spawn,          {.v = forceoffandclockcmd } },
+	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
+
 	{ ClkWinTitle,          0,              Button1,        spawn,          {.v = dmenucmd} }, // 左键点击中间弹出rofi应用
-	{ ClkWinTitle,          0,              Button2,        killclient,     {0} }, // 中键点击中间退出应用
+	{ ClkWinTitle,          0,              Button3,        killclient,     {0} }, // 中键点击中间退出应用
 
   /* dwmblock patch*/
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
@@ -218,11 +222,6 @@ static const Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            0,              Button2,        spawn,          {.v = forceoffandclockcmd } }, // 中键点击左侧图标关闭屏幕
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
  

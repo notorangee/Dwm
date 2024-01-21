@@ -17,7 +17,7 @@ case $BLOCK_BUTTON in
   1) notify-send "$(printf '%s\n' '电池信息')" "$(printf '%s%s\n' \
     '电池状态:' $BAT_ISCHAR)""$(printf '\n%s%s\n' '电池健康度:' $(printf '%.0f%s' \
     ${BAT_Health} %))""$(printf '\n%s\n' ${BAT_Time_Info})";;
-	2) notify-send "bat2" ;;
+	3) notify-send "bat2" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

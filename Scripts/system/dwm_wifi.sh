@@ -26,7 +26,7 @@ WIFI_CONNECTION(){
 
 case $BLOCK_BUTTON in
   1) notify-send "$(printf '%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
-  2) notify-send "$(printf '%s\n' 'Wifi连接信息')" "$(WIFI_CONNECTION)" ;;
+  3) notify-send "$(printf '%s\n' 'Wifi连接信息')" "$(WIFI_CONNECTION)" ;;
 	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
