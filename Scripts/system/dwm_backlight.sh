@@ -3,7 +3,7 @@
 case $BLOCK_BUTTON in
   1) light -A 5 || notify-send "$( printf '%s\n' '增大屏幕背光错误，请查看日志')" ;;
   3) light -U 5 || notify-send "$( printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
-	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
+	6) alacritty -e $EDITOR "$0" ;;
 esac
 
 #背光定义

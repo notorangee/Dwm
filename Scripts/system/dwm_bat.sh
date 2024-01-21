@@ -18,7 +18,7 @@ case $BLOCK_BUTTON in
     '电池状态:' $BAT_ISCHAR)""$(printf '\n%s%s\n' '电池健康度:' $(printf '%.0f%s' \
     ${BAT_Health} %))""$(printf '\n%s\n' ${BAT_Time_Info})";;
 	3) notify-send "bat2" ;;
-	4) "$TERMINAL" -e "$EDITOR" "$0" ;;
+	6) alacritty -e $EDITOR "$0" ;;
 esac
 
 #电池定义
