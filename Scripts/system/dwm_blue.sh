@@ -27,7 +27,7 @@ function BLUE_CHECK {
 
 case $BLOCK_BUTTON in
   1) notify-send "$(printf '%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
-	3) blueman-manager ;;
+	3) alacritty -t "bluetuith" -e "bluetuith" ;;
 	6) alacritty -e $EDITOR "$0" ;;
 esac
 
