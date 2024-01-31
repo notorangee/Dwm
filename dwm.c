@@ -1524,8 +1524,10 @@ void manage(Window w, XWindowAttributes *wa) {
   grabbuttons(c, 0);
   if (!c->isfloating)
     c->isfloating = c->oldstate = trans != None || c->isfixed;
-  if (c->isfloating)
+  if (c->isfloating){
     XRaiseWindow(dpy, c->win);
+    c->y += (vertpad + 2 * (borderpx + vp));
+  }
   switch (attachdirection) {
     case 1:
       attachabove(c);
