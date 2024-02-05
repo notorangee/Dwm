@@ -309,6 +309,7 @@ static void showhide(Client *c);
 static void sigchld(int unused);
 static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
+static void swapscratch(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -3323,6 +3324,43 @@ int xerrordummy(Display *dpy, XErrorEvent *ee) { return 0; }
 int xerrorstart(Display *dpy, XErrorEvent *ee) {
   die("dwm: another window manager is already running");
   return -1;
+}
+
+void swapscratch(const Arg *arg) {
+  if(!selmon->sel)
+    return;
+  Client *c;
+  unsigned int found = 0;
+  unsigned int newtagset = selmon->tagset[selmon->seltags] | scratchtag;
+  selmon->tagset[selmon->seltags] =  newtagset;
+
+  for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
+  if (found) {
+    if(!(selmon->sel->tags & scratchtag)){
+      c->x = selmon->sel->x;
+      c->y = selmon->sel->y;
+      c->w = selmon->sel->w;
+      c->h = selmon->sel->h;
+      c->tags = selmon->sel->tags;
+      c->isfloating = selmon->sel->isfloating;
+
+      XRaiseWindow(dpy, c->win);
+      resizeclient(c, c->x, c->y, c->w, c->h);
+    }
+  }
+  selmon->sel->w = selmon->ww / 2;
+  selmon->sel->h = selmon->wh / 2;
+  selmon->sel->x = selmon->wx + (selmon->ww / 2 - WIDTH(selmon->sel) / 2);
+  selmon->sel->y = selmon->wy + (selmon->wh / 2 - WIDTH(selmon->sel) / 3) + 6 * vp;
+  selmon->sel->tags = scratchtag;
+  selmon->sel->isfloating = True;
+  if (ISVISIBLE(selmon->sel)) {
+    XRaiseWindow(dpy, selmon->sel->win);
+    resizeclient(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h);
+    focus(selmon->sel);
+    restack(selmon);
+    arrange(selmon);
+  }
 }
 
 Monitor *

@@ -146,6 +146,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	/*补丁*/
 	{ MODKEY,                       XK_w,      togglescratch,  {.v = scratchpadcmd } },
+  { MODKEY,                       XK_e,      swapscratch,    {.v = scratchpadcmd} },
 	{ MODKEY,    	                  XK_f,      togglefullscr,  {0} },
 	{ MODKEY,	                      XK_u,      rotatestack,    {.i = +1 } },
 	{ MODKEY,          	            XK_i,      rotatestack,    {.i = -1 } },
