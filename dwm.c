@@ -1824,11 +1824,11 @@ toggleoverview(const Arg *arg)
   for (m = mons; m; m = m->next) {
     for (c = m->clients; c; c = c->next){
       if (selmon->isoverview && c->isfullscreen){
-        c->oldfullscreen = 1;
-        setfullscreen(c, 0);
-      }else if(c->oldfullscreen) {
-        c->oldfullscreen = 0;
-        setfullscreen(c, 1);
+        c->oldfullscreen = True;
+        setfullscreen(c, False);
+      } else if(c->oldfullscreen) {
+        c->oldfullscreen = False;
+        setfullscreen(c, True);
       }
     }
   }
@@ -3327,40 +3327,40 @@ int xerrorstart(Display *dpy, XErrorEvent *ee) {
 }
 
 void swapscratch(const Arg *arg) {
-  if(!selmon->sel)
+  if(!selmon->sel || selmon->sel->tags & scratchtag)
     return;
   Client *c;
   unsigned int found = 0;
   unsigned int newtagset = selmon->tagset[selmon->seltags] | scratchtag;
   selmon->tagset[selmon->seltags] =  newtagset;
-
   for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
   if (found) {
-    if(!(selmon->sel->tags & scratchtag)){
-      c->x = selmon->sel->x;
-      c->y = selmon->sel->y;
-      c->w = selmon->sel->w;
-      c->h = selmon->sel->h;
-      c->tags = selmon->sel->tags;
-      c->isfloating = selmon->sel->isfloating;
-
-      XRaiseWindow(dpy, c->win);
-      resizeclient(c, c->x, c->y, c->w, c->h);
+    if (c->isfullscreen) {
+      setfullscreen(c, False);
     }
+    if (selmon->sel->isfullscreen) {
+      setfullscreen(selmon->sel, False);
+    }
+    c->x = selmon->sel->x;
+    c->y = selmon->sel->y;
+    c->w = selmon->sel->w;
+    c->h = selmon->sel->h;
+    c->tags = selmon->sel->tags;
+    c->isfloating = selmon->sel->isfloating;
+    XRaiseWindow(dpy, c->win);
+    resizeclient(c, c->x, c->y, c->w, c->h);
   }
   selmon->sel->w = selmon->ww / 2;
   selmon->sel->h = selmon->wh / 2;
   selmon->sel->x = selmon->wx + (selmon->ww / 2 - WIDTH(selmon->sel) / 2);
   selmon->sel->y = selmon->wy + (selmon->wh / 2 - WIDTH(selmon->sel) / 3) + 6 * vp;
-  selmon->sel->tags = scratchtag;
   selmon->sel->isfloating = True;
-  if (ISVISIBLE(selmon->sel)) {
-    XRaiseWindow(dpy, selmon->sel->win);
-    resizeclient(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h);
-    focus(selmon->sel);
-    restack(selmon);
-    arrange(selmon);
-  }
+  selmon->sel->tags = scratchtag;
+  XRaiseWindow(dpy, selmon->sel->win);
+  resizeclient(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h);
+  focus(selmon->sel);
+  restack(selmon);
+  arrange(selmon);
 }
 
 Monitor *
