@@ -6,3 +6,4 @@
 
 alacritty -T "Alacritty - AutoStart" &
 google-chrome-stable &
+xset r rate 300 30
