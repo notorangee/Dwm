@@ -2283,7 +2283,7 @@ void setfullscreen(Client *c, int fullscreen) {
     XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
                     PropModeReplace, (unsigned char *)0, 0);
     c->isfullscreen = 0;
-    c->isfloating = c->oldstate;
+    c->isfloating = c->tags & scratchtag ? True : c->oldstate;
     c->bw = c->oldbw;
     c->x = c->oldx;
     c->y = c->oldy;
@@ -3336,28 +3336,30 @@ void swapscratch(const Arg *arg) {
   for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
   if (found) {
     if (c->isfullscreen) {
+      c->oldfullscreen = True;
       setfullscreen(c, False);
     }
-    if (selmon->sel->isfullscreen) {
-      setfullscreen(selmon->sel, False);
-    }
-    c->x = selmon->sel->x;
-    c->y = selmon->sel->y;
-    c->w = selmon->sel->w;
-    c->h = selmon->sel->h;
     c->tags = selmon->sel->tags;
-    c->isfloating = selmon->sel->isfloating;
+    c->oldstate = selmon->sel->isfloating;
+    c->isfloating = False;
     XRaiseWindow(dpy, c->win);
-    resizeclient(c, c->x, c->y, c->w, c->h);
+    resizeclient(c, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h);
   }
-  selmon->sel->w = selmon->ww / 2;
-  selmon->sel->h = selmon->wh / 2;
-  selmon->sel->x = selmon->wx + (selmon->ww / 2 - WIDTH(selmon->sel) / 2);
-  selmon->sel->y = selmon->wy + (selmon->wh / 2 - WIDTH(selmon->sel) / 3) + 6 * vp;
-  selmon->sel->isfloating = True;
+
   selmon->sel->tags = scratchtag;
-  XRaiseWindow(dpy, selmon->sel->win);
-  resizeclient(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h);
+  if (selmon->sel->oldfullscreen) {
+    selmon->sel->oldfullscreen = False;
+    selmon->sel->x = selmon->wx + (selmon->ww / 2 - selmon->ww / 4);
+    selmon->sel->y = selmon->wy + (selmon->wh / 2 - selmon->wh / 4);
+    selmon->sel->w = selmon->ww / 2;
+    selmon->sel->h = selmon->wh / 2;
+    setfullscreen(selmon->sel, True);
+  } else if (!selmon->sel->isfullscreen) {
+    selmon->sel->isfloating = True;
+    XRaiseWindow(dpy, selmon->sel->win);
+    resizeclient(selmon->sel, selmon->wx + (selmon->ww / 2 - selmon->ww / 4),
+        selmon->wy + (selmon->wh / 2 - selmon->wh / 4), selmon->ww / 2, selmon->wh / 2);
+  }
   focus(selmon->sel);
   restack(selmon);
   arrange(selmon);
