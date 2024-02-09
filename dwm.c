@@ -1523,8 +1523,11 @@ void manage(Window w, XWindowAttributes *wa) {
                EnterWindowMask | FocusChangeMask | PropertyChangeMask |
                    StructureNotifyMask);
   grabbuttons(c, 0);
-  if (!c->isfloating)
+  if (!c->isfloating){
     c->isfloating = c->oldstate = trans != None || c->isfixed;
+    if (selmon && selmon->sel && selmon->sel->isfullscreen)
+      c->isfloating = c->oldstate = True;
+  }
   if (c->isfloating){
     XRaiseWindow(dpy, c->win);
     c->y += (vertpad + 2 * (borderpx + vp));
