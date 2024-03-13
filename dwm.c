@@ -1685,7 +1685,7 @@ movekeyboard_y(const Arg *arg){
 }
 
 Client *nexttiled(Client *c) {
-  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  for (; c && ((c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
   return c;
 }
 
