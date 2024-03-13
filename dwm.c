@@ -246,6 +246,7 @@ static void movekeyboard_y(const Arg *arg);
 static Client *nexttagged(Client *c);
 static void moveplace(const Arg *arg);
 static Client *nexttiled(Client *c);
+static Client *nextclient(Client *c);
 static void overview(Monitor *m);
 static void pop(Client *c);
 static void propertynotify(XEvent *e);
@@ -1249,10 +1250,10 @@ grid(Monitor *m, uint gappo, uint gappi)
   unsigned int cols, rows, overcols;
   Client *c;
 
-  for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+  for (n = 0, c = nextclient(m->clients); c; c = nextclient(c->next), n++);
   if (n == 0) return;
   if (n == 1) {
-    c = nexttiled(m->clients);
+    c = nextclient(m->clients);
     cw = (m->ww - 2 * gappo) * 0.6;
     ch = (m->wh - 2 * gappo) * 0.6;
     resize(c,
@@ -1264,7 +1265,7 @@ grid(Monitor *m, uint gappo, uint gappi)
     return;
   }
   if (n == 2) {
-    c = nexttiled(m->clients);
+    c = nextclient(m->clients);
     cw = (m->ww - 2 * gappo - gappi) / 2;
     ch = (m->wh - 2 * gappo) * 0.6;
     resize(c,
@@ -1273,7 +1274,7 @@ grid(Monitor *m, uint gappo, uint gappi)
            cw - 2 * c->bw,
            ch - 2 * c->bw,
            0);
-    resize(nexttiled(c->next),
+    resize(nextclient(c->next),
            m->mx + cw + gappo + gappi,
            m->my + (m->mh - ch) / 2 + gappo,
            cw - 2 * c->bw,
@@ -1292,7 +1293,7 @@ grid(Monitor *m, uint gappo, uint gappi)
   overcols = n % cols;
   if (overcols)
     dx = (m->ww - overcols * cw - (overcols - 1) * gappi) / 2 - gappo;
-  for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+  for(i = 0, c = nextclient(m->clients); c; c = nextclient(c->next), i++) {
     cx = m->wx + (i % cols) * (cw + gappi);
     cy = m->wy + (i / cols) * (ch + gappi);
     if (overcols && i >= n - overcols) {
@@ -1685,7 +1686,12 @@ movekeyboard_y(const Arg *arg){
 }
 
 Client *nexttiled(Client *c) {
-  for (; c && ((c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  return c;
+}
+
+Client *nextclient(Client *c) {
+  for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
   return c;
 }
 
