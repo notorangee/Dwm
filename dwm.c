@@ -134,7 +134,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags, oldtags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -547,6 +547,13 @@ void attach(Client *c) {
   } else {
     c->next = c->mon->clients;
     c->mon->clients = c;
+  }
+  if(c && c->oldoverview && c->isfloating){
+    c->x = c->oldx;
+    c->y = c->oldy;
+    c->w = c->oldw;
+    c->h = c->oldh;
+    c->oldoverview = False;
   }
 }
 
@@ -1483,6 +1490,14 @@ void monocle(Monitor *m) {
     snprintf(m->ltsymbol, sizeof m->ltsymbol, "");
   for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
     resize(c, m->wx + 3, m->wy + 3, m->ww - (2 * (c->bw + 3)), m->wh - (2 * (c->bw + 3)), 0);
+  if(c && c->oldoverview && c->isfloating){
+    c->x = c->oldx;
+    c->y = c->oldy;
+    c->w = c->oldw;
+    c->h = c->oldh;
+    c->oldoverview = False;
+  }
+
 }
 
 void motionnotify(XEvent *e) {
@@ -1692,6 +1707,13 @@ Client *nexttiled(Client *c) {
 
 Client *nextclient(Client *c) {
   for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  if (c && c->isfloating){
+    c->oldx = c->x;
+    c->oldy = c->y;
+    c->oldw = c->w;
+    c->oldh = c->h;
+    c->oldoverview = True;
+  }
   return c;
 }
 
