@@ -8,6 +8,7 @@ export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export SDL_IM_MODULE=fcitx
+export INPUT_METHOD=fcitx
 export GLFW_IM_MODULE=ibus
 export _JAVA_AWT_WM_NONREPARENTING=1
 #Java 开发环境
