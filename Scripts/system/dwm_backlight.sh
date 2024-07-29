@@ -11,12 +11,11 @@ esac
 #背光定义
 # OpenGL vendor string: AMD
 # OpenGL vendor string: NVIDIA Corporation
-BACKLIGHT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2}' | cut -d '%' -f 1 )" = "Intel" ]] \
-  && echo "intel_backlight" || echo "nvidia_0")
+BACKLIGHT_MODE=$([[ "$( glxinfo | grep 'OpenGL vendor' | awk -F ': ' '{printf $2}' | cut -d '%' -f 1 )" = "AMD" ]] \
+  && echo "amdgpu_bl1" || echo "nvidia_0")
 BACKLIGHT_COUNT=$( cat /sys/class/backlight/$BACKLIGHT_MODE/brightness )
-BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "intel_backlight" ]] && echo "scale=0; $BACKLIGHT_COUNT / 75" | bc \
+BACKLIGHT_INFO=$( [[ "$BACKLIGHT_MODE" = "amdgpu_bl1" ]] && echo "scale=2; $BACKLIGHT_COUNT / 255 * 100" | bc \
   || echo "scale=0; $BACKLIGHT_COUNT * 1" | bc)
 BACKLIGHT_Icon="󰝩"
-BACKLIGHT_Status="${BACKLIGHT_INFO%}"
 
-echo "${BACKLIGHT_Icon}:${BACKLIGHT_Status}%"
+printf '%s%d%s' "${BACKLIGHT_Icon}:" ${BACKLIGHT_INFO} "%"
