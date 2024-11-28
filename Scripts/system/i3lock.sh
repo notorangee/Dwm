@@ -32,5 +32,6 @@ i3lock \
 --clock                      \
 --indicator                  \
 --time-str="%H:%M:%S"        \
---date-str="%A, %Y-%m-%d"       \
---keylayout 1                \
+--date-str="%A %Y-%m-%d"       \
+--keylayout 0                \
+--beep
