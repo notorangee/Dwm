@@ -134,7 +134,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags, oldtags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview, isscale;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -442,6 +442,8 @@ void aspectresize(const Arg *arg) {
 
   nw = c->w + w;
   nh = c->h + h;
+
+  c->isscale = True;
 
   XRaiseWindow(dpy, c->win);
   resize(c, c->x, c->y, nw, nh, True);
@@ -1378,6 +1380,7 @@ void manage(Window w, XWindowAttributes *wa) {
   c->w = c->oldw = wa->width;
   c->h = c->oldh = wa->height;
   c->oldbw = wa->border_width;
+  c->isscale = False;
 
   updatetitle(c);
   if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
@@ -1588,13 +1591,15 @@ void moveplace(const Arg *arg) {
   if (!c || (arg->ui >= 9))
     return;
   if (c->isfloating && oldsignal == arg->ui) {
+    if (c->isscale)
+      c->isscale = False;
     togglefloating(NULL);
     return;
   }
   if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
     togglefloating(NULL);
-  nh = (selmon->wh / 2) - (c->bw * 2);
-  nw = (selmon->ww / 2) - (c->bw * 2);
+  nh = c->isscale ? c->h : (selmon->wh / 2) - (c->bw * 2);
+  nw = c->isscale ? c->w : (selmon->ww / 2) - (c->bw * 2);
   nx = (arg->ui % 3) - 1;
   ny = (arg->ui / 3) - 1;
   if (nx < 0)
