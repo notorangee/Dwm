@@ -1,5 +1,10 @@
 #! /bin/sh
 
+WIFI_MAIN="Ora"
+WIFI_MAIN_PW="pom59641874@//"
+WIFI_RESERVE="PCDN_5G"
+WIFI_RESERVE_PW="axb7kkta"
+
 WIFI_DEV=0 # laptop = 0 or tablet = 1
 WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
 WIFI_getInfo=$(nmcli device show $( [[ $WIFI_DEV -eq 0 ]] && echo "wlan0" || echo "wlp1s0" ) \
@@ -17,10 +22,10 @@ WIFI_Info(){
 
 WIFI_CONNECTION(){
   nmcli device wifi rescan 2>/dev/null && nmcli device wifi list >/dev/null && nmcli device wifi \
-    connect Ora password pom59641874@ hidden yes >/dev/null && printf '%s\n' '连接到Ora'
+    connect $WIFI_MAIN password $WIFI_MAIN_PW hidden yes >/dev/null && printf '%s\n' "连接到$WIFI_MAIN"
   if [[ $? -ne 0 ]]; then
-    nmcli device wifi connect A601_5G password 12345678@601 >/dev/null \
-      && printf '%s\n' '未发现Ora! 连接到A601_5G'
+    nmcli device wifi connect $WIFI_RESERVE password $WIFI_RESERVE_PW >/dev/null \
+      && printf '%s\n' "未发现$WIFI_MAIN! 连接到$WIFI_RESERVE"
   fi
 }
 
