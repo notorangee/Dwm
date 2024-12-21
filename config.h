@@ -53,6 +53,7 @@ static const Rule rules[] = {
 	{ "firefox",        NULL,              NULL,                        0,          0,          -1 },
 	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,          -1 },
 	{ "Alacritty",      "Alacritty",       "ncmpcpp",                   0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
 	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
 	{ "wps",            "wps",             NULL,                        0,          1,          -1 },
@@ -103,7 +104,7 @@ static const char scratchpadname[] = "alacritty small window";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
 /*其它小窗口*/
 static const char *bluetuithcmd[] = {"alacritty", "-t", "bluetuith", "-e", "bluetuith", NULL };
-static const char *musiccmd[] = {"alacritty", "-t", "ncmpcpp", "-e", "ncmpcpp", NULL };
+static const char *musiccmd[] = {"/home/orange/Dwm/Scripts/system/dwm_music.sh", NULL };
 static const char *systraycmd[] = {"/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/
 static const char *forceoffandclockcmd[] = { "/home/orange/Dwm/Scripts/system/forceoff_lock.sh", NULL };

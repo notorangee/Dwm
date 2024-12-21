@@ -1057,8 +1057,8 @@ void expose(XEvent *e) {
 }
 
 void focus(Client *c) {
-  if (!c || !ISVISIBLE(c) || HIDDEN(c))
-    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->snext)
+  if (!c || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus)
+    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->snext)
       ;
   if (selmon->sel && selmon->sel != c)
     unfocus(selmon->sel, 0);
@@ -1109,18 +1109,18 @@ void focusstack(const Arg *arg) {
   if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
     return;
   if (arg->i > 0) {
-    for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->next)
+    for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next)
       ;
     if (!c)
-      for (c = selmon->clients; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->next)
+      for (c = selmon->clients; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next)
         ;
   } else {
     for (i = selmon->clients; i != selmon->sel; i = i->next)
-      if (ISVISIBLE(i) && !HIDDEN(i))
+      if (ISVISIBLE(i) && !HIDDEN(i) && !i->neverfocus)
         c = i;
     if (!c)
       for (; i; i = i->next)
-        if (ISVISIBLE(i) && !HIDDEN(i))
+        if (ISVISIBLE(i) && !HIDDEN(i) && !i->neverfocus)
           c = i;
   }
   if (c) {
@@ -1403,8 +1403,6 @@ void manage(Window w, XWindowAttributes *wa) {
   if (!strcmp(c->name, scratchpadname)) {
     c->mon->tagset[c->mon->seltags] |= c->tags = scratchtag;
     c->isfloating = True;
-    c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
-    c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
   }
 
   wc.border_width = c->bw;
@@ -1429,6 +1427,16 @@ void manage(Window w, XWindowAttributes *wa) {
     XRaiseWindow(dpy, c->win);
     c->y += (vertpad + 2 * (borderpx + vp));
   }
+
+  if (!strcmp(c->name, "MusicVisua")){
+      c->tags = ~0 & TAGMASK;
+      c->w = c->mon->ww / 5;
+      c->h = c->mon->wh / 6;
+      c->x = c->mon->wx + (c->mon->mw - WIDTH(c) - 2 * c->bw);
+      c->y = c->mon->wy + 2 * c->bw;
+      c->neverfocus = True;
+  }
+
   switch (attachdirection) {
     case 1:
       attachabove(c);
@@ -1706,12 +1714,12 @@ movekeyboard_y(const Arg *arg){
 }
 
 Client *nexttiled(Client *c) {
-  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next);
   return c;
 }
 
 Client *nextclient(Client *c) {
-  for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+  for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next);
   if (c && c->isfloating){
     c->oldx = c->x;
     c->oldy = c->y;
@@ -2370,10 +2378,10 @@ int issinglewin(const Arg *arg) {
     int cot = 0;
     int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if ((ISVISIBLE(c) && !HIDDEN(c)) || (c->tags == (~0 & TAGMASK) || c->tags == tag)) {
+        if ((ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus) || (c->tags == (~0 & TAGMASK) || c->tags == tag)) {
             cot++;
         }
-        if (cot > 1) {
+        if (cot != 1) {
             return 0;
         }
     }
