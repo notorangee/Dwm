@@ -215,6 +215,7 @@ static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
+static void dwmdebug(void);
 static void enqueue(Client *c);
 static void enqueuestack(Client *c);
 static void enternotify(XEvent *e);
@@ -1001,6 +1002,14 @@ void drawbar(Monitor *m) {
     }
   }
   drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+}
+
+static void dwmdebug(void) {
+  volatile int a = 0;
+  volatile int b = 0;
+  while (a == 0) {
+    b = 1;
+  }
 }
 
 void enqueue(Client *c) {
@@ -3117,6 +3126,9 @@ void zoom(const Arg *arg) {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef DEBUG
+  dwmdebug();
+#endif
   if (argc == 2 && !strcmp("-v", argv[1]))
     die("dwm-" VERSION);
   else if (argc != 1)
