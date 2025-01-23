@@ -11,8 +11,8 @@ static const int vertpad            = 3;       /* vertical padding of bar */
 static const int sidepad            = 3;       /* horizontal padding of bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
 static const char *fonts[]          = { dwmmode 
-                                      ? "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=34:type=Black:antialias=true:autohint=true"
-                                      : "SauceCodePro Nerd Font Mono:style=Blod:pixelsize=18:type=Black:antialias=true:autohint=true" };
+                                      ? "SauceCodePro NFM:style=Blod:pixelsize=34:antialias=true:autohint=true"
+                                      : "SauceCodePro NFM:style=Blod:pixelsize=18:antialias=true:autohint=true" };
 static const char col_gray1[]       = "#2d2c2c";
 static const char col_gray2[]       = "#2d2c2c";//灰黑
 static const char col_gray3[]       = "#e8e4e4";//灰白
