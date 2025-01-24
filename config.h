@@ -54,6 +54,7 @@ static const Rule rules[] = {
 	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,          -1 },
 	{ "Alacritty",      "Alacritty",       "ncmpcpp",                   0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
 	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
 	{ "wps",            "wps",             NULL,                        0,          1,          -1 },
