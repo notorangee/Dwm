@@ -1,16 +1,29 @@
 #! /bin/zsh
 
-current_song=$(mpc current)
+playing=$(mpc current)
+next=${playing}
+change=false
 while true; do
   clear
-  printf " ${current_song}"
+  printf " ${playing}"
   sleep 2
-  for (( i=0; i<${#current_song}; i++ )); do
+  for (( i=0; i<${#playing}; i++ )); do
+    next=$(mpc current)
+    if [[ "${playing}" != "${next}" ]]; then
+      playing=${next}
+      change=true
+      break 
+    fi
     clear
-    printf "\r ${current_song:$i}  ${current_song:0:$i}"
+    printf "\r ${playing:$i}  ${playing:0:$i}"
     sleep 0.5
   done
+  if [[ "$change" = "true" ]]; then
+    change=false
+    continue
+  fi
   clear
-  printf " ${current_song}"
-  current_song=$(mpc current --wait)
+  printf " ${playing}"
+  next=$(mpc current --wait)
+  playing=${next}
 done
