@@ -1437,12 +1437,20 @@ void manage(Window w, XWindowAttributes *wa) {
     c->y += (vertpad + 2 * (borderpx + vp));
   }
 
+  if (!strcmp(c->name, "MusicInfo")){
+      c->tags = ~0 & TAGMASK;
+      c->w = c->mon->ww / 5;
+      c->h = c->mon->wh / 15;
+      c->x = c->mon->wx + (c->mon->mw - WIDTH(c) - 2 * c->bw);
+      c->y = c->mon->wy + 2 * c->bw;
+      c->neverfocus = True;
+  }
   if (!strcmp(c->name, "MusicVisua")){
       c->tags = ~0 & TAGMASK;
       c->w = c->mon->ww / 5;
       c->h = c->mon->wh / 6;
       c->x = c->mon->wx + (c->mon->mw - WIDTH(c) - 2 * c->bw);
-      c->y = c->mon->wy + 2 * c->bw;
+      c->y = c->mon->wy + 2 * c->bw + c->mon->wh / 15;
       c->neverfocus = True;
   }
 
