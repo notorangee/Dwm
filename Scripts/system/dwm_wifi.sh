@@ -1,7 +1,7 @@
 #! /bin/sh
 
 WIFI_MAIN="Ora"
-WIFI_MAIN_PW="pom59641874@//"
+WIFI_MAIN_PW="pom59641874@&"
 WIFI_RESERVE="PCDN_5G"
 WIFI_RESERVE_PW="axb7kkta"
 
