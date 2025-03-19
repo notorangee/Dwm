@@ -34,6 +34,7 @@ nitrogen --restore &
 # onboard &
 dwmblocks &
 # prime-offload
+caffeine start -a &
 exec dwm
 # fcitx5 -d &
 # exec dwl -s waybar
