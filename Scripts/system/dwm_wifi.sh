@@ -21,10 +21,10 @@ WIFI_Info(){
 }
 
 WIFI_CONNECTION(){
-  nmcli device wifi rescan 2>/dev/null && nmcli device wifi list >/dev/null && nmcli device wifi \
-    connect $WIFI_MAIN password $WIFI_MAIN_PW hidden yes >/dev/null && printf '%s\n' "连接到$WIFI_MAIN"
+  nmcli device wifi rescan 2>/dev/null && nmcli device wifi list >/dev/null && nmcli connection up \
+    $WIFI_MAIN >/dev/null && printf '%s\n' "连接到$WIFI_MAIN"
   if [[ $? -ne 0 ]]; then
-    nmcli device wifi connect $WIFI_RESERVE password $WIFI_RESERVE_PW >/dev/null \
+    nmcli connection up $WIFI_RESERVE >/dev/null \
       && printf '%s\n' "未发现$WIFI_MAIN! 连接到$WIFI_RESERVE"
   fi
 }
@@ -44,13 +44,11 @@ percentage="$(grep "^\s*w" /proc/net/wireless | awk '{ print "", int($3 * 100 / 
 WIFI_Device=$( cat /proc/net/wireless | awk 'END{print $0}' | awk -F ':' '{print $1}' 2>/dev/null )
 if [ $WIFI_Device = $( [[ $WIFI_DEV -eq 0 ]] && echo "wlan0" || echo "wlp1s0" ) ]; then
   if [ !$percentage ]; then
-    
     if $(ping -c 1 archlinux.org >/dev/null); then
 	    WIFI_STATUS="$WIFI_ICON:$percentage%"
     else
 	    WIFI_STATUS="$NO_WIFI_ICON:$percentage%"
     fi
-
   fi
 fi
 
