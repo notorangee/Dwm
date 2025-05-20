@@ -1437,6 +1437,10 @@ void manage(Window w, XWindowAttributes *wa) {
     c->y += (vertpad + 2 * (borderpx + vp));
   }
 
+  if (!strcmp(c->name, "MusicWin")){
+      c->tags = ~0 & TAGMASK;
+  }
+
   if (!strcmp(c->name, "MusicInfo")){
       c->tags = ~0 & TAGMASK;
       c->w = c->mon->ww / 5;
