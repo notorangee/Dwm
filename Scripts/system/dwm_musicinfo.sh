@@ -1,5 +1,6 @@
 #! /bin/zsh
 
+echo -e "\e[?25l"
 playing=$(mpc current)
 next=${playing}
 change=false
