@@ -141,7 +141,8 @@ static const Key keys[] = {
   { MODKEY|ShiftMask,             XK_F1,     spawn,          {.v = poweroffcmd } }, 
   { MODKEY|ShiftMask,             XK_F2,     spawn,          {.v = rebootcmd } }, 
 
-	{ MODKEY,                       XK_v,      togglebar,      {0} },
+	{ MODKEY,                       XK_v,      togglemaxwin,   {0} },
+	{ MODKEY|ShiftMask,             XK_v,      togglebar,      {0} },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_o,      incnmaster,     {.i = +1 } },

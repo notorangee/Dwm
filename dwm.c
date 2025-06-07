@@ -134,7 +134,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags, oldtags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview, isscale;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview, isscale, ismaxwin;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -292,6 +292,7 @@ static void togglescratch(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglefullscr(const Arg *arg);
+static void togglemaxwin(const Arg *arg);
 static void toggleoverview(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -1115,7 +1116,7 @@ void focusstack(const Arg *arg) {
       focuswin(arg);
       return;
   }
-  if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
+  if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen) || selmon->sel->ismaxwin)
     return;
   if (arg->i > 0) {
     for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next)
@@ -1390,6 +1391,7 @@ void manage(Window w, XWindowAttributes *wa) {
   c->h = c->oldh = wa->height;
   c->oldbw = wa->border_width;
   c->isscale = False;
+  c->ismaxwin = False;
 
   updatetitle(c);
   if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
@@ -1757,6 +1759,21 @@ overview(Monitor *m)
     grid(m, overviewgappo, overviewgappi);
 }
 
+static void togglemaxwin(const Arg *arg){
+  Client* c = selmon->sel; 
+  if(!c || ((!c->isfloating || !selmon->isoverview) && issinglewin(arg)) || !strcmp(selmon->ltsymbol, ""))
+    return;
+  if(c->ismaxwin){
+    resize(c, c->oldx, c->oldy, c->oldw, c->oldh, 0);
+    arrange(selmon);
+  } else {
+    snprintf(selmon->ltsymbol, sizeof selmon->ltsymbol, "max");
+    resize(c, selmon->wx + 3, selmon->wy + 3, selmon->ww - (2 * (c->bw + 3)), selmon->wh - (2 * (c->bw + 3)), 0);
+    restack(selmon);
+    c->ismaxwin = True;
+  }
+}
+
 // 显示所有tag 或 跳转到聚焦窗口的tag
 void
 toggleoverview(const Arg *arg)
@@ -1853,6 +1870,9 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
   c->oldh = c->h;
   c->h = wc.height = h;
   wc.border_width = c->bw;
+
+  if(c->ismaxwin)
+    c->ismaxwin = False;
 
   XConfigureWindow(dpy, c->win, CWX | CWY | CWWidth | CWHeight | CWBorderWidth,
                    &wc);
@@ -2397,9 +2417,9 @@ void restoreotherwins(const Arg *arg) {
 int issinglewin(const Arg *arg) {
     Client *c = NULL;
     int cot = 0;
-    int tag = selmon->tagset[selmon->seltags];
+    // int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if ((ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus) || (c->tags == (~0 & TAGMASK) || c->tags == tag)) {
+        if (ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus && c->tags != (~0 & TAGMASK)) {
             cot++;
         }
         if (cot != 1) {
