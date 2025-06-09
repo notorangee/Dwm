@@ -2417,9 +2417,9 @@ void restoreotherwins(const Arg *arg) {
 int issinglewin(const Arg *arg) {
     Client *c = NULL;
     int cot = 0;
-    // int tag = selmon->tagset[selmon->seltags];
+    int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if (ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus && c->tags != (~0 & TAGMASK)) {
+        if (ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus && (!(c->tags & scratchtag) && c->tags == tag)) {
             cot++;
         }
         if (cot != 1) {
