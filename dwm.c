@@ -2419,7 +2419,7 @@ int issinglewin(const Arg *arg) {
     int cot = 0;
     int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if (ISVISIBLE(c) && !HIDDEN(c) && !c->neverfocus && (!(c->tags & scratchtag) && c->tags == tag)) {
+        if (((ISVISIBLE(c) && !HIDDEN(c)) || (c->tags == (~0 & TAGMASK) && c->tags == tag)) && !c->neverfocus) {
             cot++;
         }
         if (cot != 1) {
