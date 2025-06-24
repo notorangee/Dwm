@@ -28,7 +28,7 @@ export LIBVA_DRIVER_NAME=vdpau
 export VDPAU_DRIVER=nvidia
 # export MOZ_USE_XINPUT2=1
 
-picom --experimental-backends &
+picom &
 flameshot &
 nitrogen --restore &
 # onboard &
