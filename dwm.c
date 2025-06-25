@@ -1766,7 +1766,7 @@ static void togglemaxwin(const Arg *arg){
     resize(c, c->oldx, c->oldy, c->oldw, c->oldh, 0);
     arrange(selmon);
   } else {
-    snprintf(selmon->ltsymbol, sizeof selmon->ltsymbol, "max");
+    snprintf(selmon->ltsymbol, sizeof selmon->ltsymbol, "");
     resize(c, selmon->wx + 3, selmon->wy + 3, selmon->ww - (2 * (c->bw + 3)), selmon->wh - (2 * (c->bw + 3)), 0);
     restack(selmon);
     c->ismaxwin = True;
