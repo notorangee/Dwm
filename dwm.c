@@ -1522,7 +1522,7 @@ void monocle(Monitor *m) {
   if (n > 0) /* override layout symbol */
     snprintf(m->ltsymbol, sizeof m->ltsymbol, "");
   for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-    resize(c, m->wx + 3, m->wy + 3, m->ww - (2 * (c->bw + 3)), m->wh - (2 * (c->bw + 3)), 0);
+    resize(c, m->wx + m->gappx, m->wy + m->gappx, m->ww - (2 * (c->bw + m->gappx)), m->wh - (2 * (c->bw + m->gappx)), 0);
   if(c && c->oldoverview && c->isfloating){
     c->x = c->oldx;
     c->y = c->oldy;
@@ -2570,8 +2570,8 @@ void tile(Monitor *m) {
        c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
       h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
-      resize(c, m->wx + m->gappx, m->wy + my, mw - (2 * c->bw) - m->gappx,
-             h - (2 * c->bw), 0);
+      resize(c, m->wx + m->gappx, m->wy + my, mw - (2 * (c->bw + m->gappx )),
+             h - (2 * (c->bw + m->gappx)), 0);
       if (my + HEIGHT(c) < m->wh)
         my += HEIGHT(c) + m->gappx;
     } else {
