@@ -7,9 +7,9 @@ case $BLOCK_BUTTON in
 esac
 
 INPUT_READ=$( fcitx5-remote 2>/dev/null )
-INPUT_STATUS="英"
+INPUT_STATUS="EN"
 if [ $INPUT_READ -eq 2 ]; then
-	INPUT_STATUS="中"
+	INPUT_STATUS="ZH"
 fi
 
 printf "%s\n" "${INPUT_STATUS}"
