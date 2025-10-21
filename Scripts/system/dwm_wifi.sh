@@ -6,10 +6,10 @@ WIFI_RESERVE="PCDN_5G"
 WIFI_RESERVE_PW="axb7kkta"
 
 WIFI_DEV=0 # laptop = 0 or tablet = 1
-WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:")
+WIFI_Dispose=( "WIFI:" "设备:" "MAC地址:" "IPV4:" "网关:")
 WIFI_getInfo=$(nmcli device show $( [[ $WIFI_DEV -eq 0 ]] && echo "wlan0" || echo "wlp1s0" ) \
   | grep -e "GENERAL.CONNECTION" -e "GENERAL.DEVICE" \
-  -e "GENERAL.HWADDR" -e "IP4.ADDRESS\[1\]" | sort | awk -F ": +" '{print $2}' 2>/dev/null)
+  -e "GENERAL.HWADDR" -e "IP4.ADDRESS\[1\]" -e IP4.GATEWAY | sort | awk -F ": +" '{print $2}' 2>/dev/null)
 
 i=0
 WIFI_Info(){
