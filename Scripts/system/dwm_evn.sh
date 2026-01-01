@@ -1,6 +1,6 @@
 #! /bin/sh
-export LANG=zh_CN.UTF-8
-export LANGUAGE=zh_CN:en_US
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
 export IDENTIFIER="unicode"
 export EDITOR='nvim'
 # export XDG_SESSION_TYPE=wayland
