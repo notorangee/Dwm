@@ -1,15 +1,14 @@
-#! /bin/sh
-
 #蓝牙定义
-BLUE_DEVICES=$(bluetoothctl devices | awk '{print $2}' 2>/dev/null)
+BLUE_DEVICES=$(echo "devices" | bluetoothctl | grep "^Device" | awk '{print $2}' 2>/dev/null)
 BLUE_ICON="󰂲"
 BLUE_STATUS="NDC"
 
 function BLUE_CHECK {
   for device in ${BLUE_DEVICES}
   do
-    if [[ "$( bluetoothctl info $device | grep 'Connected' | awk -F ': ' '{print $2}' 2>/dev/null)" = "yes" ]]; then
-      local device_name=$(bluetoothctl info $device | awk '/Alias/' | awk -F ': ' '{print $2}' 2>/dev/null)
+    local device_online=$(echo "info $device" | bluetoothctl | awk -F ': ' '/^[[:space:]]*Connected:/ {print $2}' 2>/dev/null)
+    if [[ "$device_online" = "yes" ]]; then
+      local device_name=$(echo "info $device" | bluetoothctl | awk '/Alias/' | awk -F ': ' '{print $2}' 2>/dev/null)
       BLUE_ICON="󰂱"
       BLUE_STATUS="CTD"
       if [[ "$device_name" = "Keyboard K380" ]]; then
