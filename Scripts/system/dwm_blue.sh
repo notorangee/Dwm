@@ -9,13 +9,18 @@ function BLUE_CHECK {
     local device_online=$(echo "info $device" | bluetoothctl | awk -F ': ' '/^[[:space:]]*Connected:/ {print $2}' 2>/dev/null)
     if [[ "$device_online" = "yes" ]]; then
       local device_name=$(echo "info $device" | bluetoothctl | awk '/Alias/' | awk -F ': ' '{print $2}' 2>/dev/null)
+      local battery=$(echo "info $device" | bluetoothctl | awk -F '[()]' '/Battery Percentage:/ {print $2}')
       BLUE_ICON="󰂱"
       BLUE_STATUS="CTD"
       if [[ "$device_name" = "Keyboard K380" ]]; then
         xset r rate 300 30 2>/dev/null #设置蓝牙键盘在唤醒时的响应速度
       fi
       if [[ $BLOCK_BUTTON == 1 ]]; then
-        printf "%s\n" "${device_name}"
+        if [[ "$battery" != "" ]]; then
+          printf "%s 电量:%s\n" "${device_name}" "${battery}"
+        else
+          printf "%s\n" "${device_name}"
+        fi
       fi
     fi
   done
