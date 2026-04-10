@@ -19,7 +19,7 @@ WIFI_Info(){
   for row in ${WIFI_getInfo}
   do
     printf "%-5s%-1s\n" ${WIFI_DISPOSE[$i]} ${row}
-    i=`expr $i + 1`
+    (( i++ ))
   done
 }
 
@@ -29,12 +29,15 @@ WIFI_Connect(){
     return
   fi
   nmcli device wifi rescan 2>/dev/null
-  nmcli connection up $WIFI_MAIN >/dev/null && echo "连接到$WIFI_MAIN"
-  if [[ $? -ne 0 ]]; then
-    nmcli connection up $WIFI_RESERVE >/dev/null \
-      && echo "未发现$WIFI_MAIN! 连接到$WIFI_RESERVE" && return
-    echo "无法连接指定的WIFI设备"
-  fi
+  timeout=3
+  while [[ $timeout -gt 0 ]]; do
+    (( timeout-- ))
+    nmcli connection up $WIFI_MAIN >/dev/null && { echo "连接到$WIFI_MAIN"; return 0; }
+    sleep 1s
+  done
+  nmcli connection up $WIFI_RESERVE >/dev/null \
+    && { echo "未发现$WIFI_MAIN! 连接到$WIFI_RESERVE" ; return 0;}
+  echo "无法连接指定的WIFI设备!"
 }
 
 WIFI_Turn(){
