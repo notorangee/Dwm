@@ -33,7 +33,7 @@ WIFI_Connect(){
   while [[ $timeout -gt 0 ]]; do
     (( timeout-- ))
     nmcli connection up $WIFI_MAIN >/dev/null && { echo "连接到$WIFI_MAIN"; return 0; }
-    sleep 1s
+    sleep 2s
   done
   nmcli connection up $WIFI_RESERVE >/dev/null \
     && { echo "未发现$WIFI_MAIN! 连接到$WIFI_RESERVE" ; return 0;}
