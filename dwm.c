@@ -1950,7 +1950,12 @@ void rotatestack(const Arg *arg) {
       ;
     if (c) {
       detach(c);
-      attach(c);
+      if (!newclientathead) {
+        c->next = c->mon->clients;
+        c->mon->clients = c;
+      } else {
+        attach(c);
+      }
       detachstack(c);
       attachstack(c);
     }
