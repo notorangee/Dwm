@@ -1328,8 +1328,11 @@ grid(Monitor *m, uint gappo, uint gappi)
 }
 
 void incnmaster(const Arg *arg) {
-  selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag] =
-      MAX(selmon->nmaster + arg->i, 0);
+  unsigned int maxmaster, nmaster;
+  Client *c;
+  for (maxmaster = 0, c = nextclient(selmon->clients); c; c = nextclient(c->next), maxmaster++);
+  nmaster = MAX(selmon->nmaster + arg->i, 0);
+  selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag] = MIN(maxmaster, nmaster);
   arrange(selmon);
 }
 
