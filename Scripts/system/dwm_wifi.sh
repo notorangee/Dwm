@@ -28,10 +28,10 @@ WIFI_Connect(){
     echo "WIFI已关闭"
     return
   fi
-  nmcli device wifi rescan 2>/dev/null
   timeout=3
   while [[ $timeout -gt 0 ]]; do
     (( timeout-- ))
+    nmcli device wifi rescan 2>/dev/null
     nmcli connection up $WIFI_MAIN >/dev/null && { echo "连接到$WIFI_MAIN"; return 0; }
     sleep 2s
   done
