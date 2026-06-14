@@ -3,7 +3,7 @@
 WIFI_MAIN="Ora"
 WIFI_RESERVE="PCDN_5G"
 WIFI_DEV=0 # laptop = 0 or tablet = 1
-WIFI_DISPOSE=( "WIFI:" "设备:" "MAC地址:" "IPV4:" "网关:")
+WIFI_DISPOSE=( "WIFI名称:" "硬件设备:" "MAC地址:" "IPV4:" "网关:")
 WIFI_getStatus=$(nmcli device status | grep "wlan0" | awk '{print $3}')
 
 WIFI_getInfo=$(nmcli device show $( [[ $WIFI_DEV -eq 0 ]] && echo "wlan0" || echo "wlp1s0" ) \
