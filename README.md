@@ -1,2 +1,3 @@
 # Dwm
-My Dwm Config
+My Dwm Configuration
+![Screeshot](screenshot.png)
