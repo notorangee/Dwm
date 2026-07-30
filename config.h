@@ -58,8 +58,7 @@ static const Rule rules[] = {
 	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
 	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
-	{ "wps",            "wps",             NULL,                        0,          1,          -1 },
-	{ "QQ",             "qq",              NULL,                        0,          1,          -1 },
+	{ "flameshot",      "flameshot",       NULL,                        0,          1,          -1 },
 };
 
 /* layout(s) */
