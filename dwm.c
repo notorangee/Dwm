@@ -965,7 +965,8 @@ void drawbar(Monitor *m) {
   }
 
   for (c = m->clients; c; c = c->next) {
-    occ |= c->tags;
+    if (!c->neverfocus && strcmp(c->name, "MusicWin"))
+      occ |= c->tags;
     if (c->isurgent)
       urg |= c->tags;
   }
