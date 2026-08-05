@@ -92,8 +92,8 @@ function BLUE_CHECK {
 
 case $BLOCK_BUTTON in
   1) notify-send "$(printf '%s\n' '蓝牙设备')" "$(BLUE_CHECK)" ;;
-  2) bluetoothctl connect 00:02:5B:00:FF:0E >/dev/null && notify-send "连接到蓝牙设备00:02:5B:00:FF:0E" ;;
-	3) alacritty -t "bluetuith" -e "bluetuith" ;;
+	2) alacritty -t "bluetuith" -e "bluetuith" ;;
+  3) bluetoothctl connect 00:02:5B:00:FF:0E >/dev/null && notify-send "连接到蓝牙设备00:02:5B:00:FF:0E" ;;
 	6) alacritty -e $EDITOR "$0" ;;
 esac
 

@@ -56,7 +56,7 @@ static const Rule rules[] = {
 	{ "Alacritty",      "Alacritty",       "MusicWin",                  0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,          -1 },
 	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
+	{ "Alacritty",      "Alacritty",       "Bluetuith",                 0,          1,          -1 },
 	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
 	{ "flameshot",      "flameshot",       NULL,                        0,          1,          -1 },
 };
@@ -100,11 +100,11 @@ static const Layout layouts[] = {
 static const char *termcmd[]  = { "alacritty", NULL };
 /*rofi配置*/
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
-/*alacritty小窗口*/
-static const char scratchpadname[] = "alacritty small window";
+/*Alacritty小窗口*/
+static const char scratchpadname[] = "Alacritty - Scratchpad";
 static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
 /*其它小窗口*/
-static const char *bluetuithcmd[] = {"alacritty", "-t", "bluetuith", "-e", "bluetuith", NULL };
+static const char *bluetuithcmd[] = {"alacritty", "-t", "Bluetuith", "-e", "bluetuith", NULL };
 static const char *musiccmd[] = {"/home/orange/Dwm/Scripts/system/dwm_music.sh", NULL };
 static const char *systraycmd[] = {"/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/
@@ -151,7 +151,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	/*补丁*/
 	{ MODKEY,                       XK_w,      togglescratch,  {.v = scratchpadcmd } },
-  { MODKEY,                       XK_e,      swapscratch,    {.v = scratchpadcmd} },
+  { MODKEY,                       XK_e,      swapscratch,    {0} },
 	{ MODKEY,    	                  XK_f,      togglefullscr,  {0} },
 	{ MODKEY,	                      XK_u,      rotatestack,    {.i = +1 } },
 	{ MODKEY,          	            XK_i,      rotatestack,    {.i = -1 } },
