@@ -6,7 +6,7 @@ Clock_Info=$(TZ="$TIMEZONE" date +'%F %A %n %T' 2>/dev/null)
 case $BLOCK_BUTTON in
 	1) notify-send "当前时间" "${Clock_Info}" ;;
 	3) notify-send "$(cal --color=never)" ;;
-	6) alacritty -e $EDITOR "$0" ;;
+	6) kitty -e $EDITOR "$0" ;;
 esac
 
 LOCALTIME=$( TZ="$TIMEZONE" date +'%H:%M' 2>/dev/null )

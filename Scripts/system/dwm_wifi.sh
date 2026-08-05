@@ -52,7 +52,7 @@ WIFI_Turn(){
 }
 
 WIFI_Define(){
-  WIFI_ICON=''
+  WIFI_ICON='󰖩'
   WIFI_ICON_ALERT='󱚵'
   NO_WIFI_ICON='󰖪'
   WIFI_Status="$NO_WIFI_ICON:xx%" 
@@ -82,7 +82,7 @@ case $BLOCK_BUTTON in
   1) notify-send -t 5000 "$(printf '%s\n' 'WIFI详情')" "$(WIFI_Info)" ;;
   2) notify-send -t 3000 "$(printf '%s\n' 'wIFI状态切换')" "$(WIFI_Turn)" ;;
   3) notify-send -t 1500 "$(printf '%s\n' 'WIFI连接')" "$(WIFI_Connect)" ;;
-	6) alacritty -e $EDITOR "$0" ;;
+	6) kitty -e $EDITOR "$0" ;;
 esac
 
 WIFI_Define

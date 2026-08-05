@@ -15,7 +15,7 @@ case $BLOCK_BUTTON in
   3) light -U 5 || notify-send "$( printf '%s\n' '减小屏幕背光错误，请查看日志')" ;;
   4) light -A 5 ;;
   5) light -U 5 ;;
-	6) alacritty -e $EDITOR "$0" ;;
+	6) kitty -e $EDITOR "$0" ;;
 esac
 
 printf '%s%d%s' "${BACKLIGHT_Icon}:" ${BACKLIGHT_INFO} "%"

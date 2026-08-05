@@ -6,8 +6,8 @@ cava_pid=$(pgrep -fn cava)
 killall ncmpcpp 2>/dev/null
 kill -9 ${cava_pid} 2>/dev/null
 if [ $? -ne 0 ]; then
-  alacritty -t MusicWin -e ncmpcpp & \
-  alacritty -t MusicVisua -e cava -p $HOME/.config/cava/dwm & \
-  alacritty -t MusicInfo -e $HOME/Dwm/Scripts/system/dwm_musicinfo.sh
+  kitty -T MusicWin -e ncmpcpp & \
+  kitty -T MusicVisua -e cava -p $HOME/.config/cava/dwm & \
+  kitty -T MusicInfo -e $HOME/Dwm/Scripts/system/dwm_musicinfo.sh
 fi
 

@@ -48,15 +48,15 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class            instance           title                    tags mask   isfloating   monitor */
-	{ "Alacritty",      "Alacritty",       "Alacritty - AutoStart",     1 << 0,     0,          -1 },
+	{ "kitty",          "kitty",       "Kitty - AutoStart",     1 << 0,     0,          -1 },
 	{ "Google-chrome",  "google-chrome",   NULL,                        1 << 1,     0,          -1 },
 	{ "steam",          NULL,              NULL,                        1 << 2,     0,          -1 },
 	{ "firefox",        NULL,              NULL,                        0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicWin",                  0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "bluetuith",                 0,          1,          -1 },
+	{ "kitty",          "kitty",       "musicfox",                  0,          0,          -1 },
+	{ "kitty",          "kitty",       "MusicWin",                  0,          1,          -1 },
+	{ "kitty",          "kitty",       "MusicVisua",                0,          1,          -1 },
+	{ "kitty",          "kitty",       "MusicInfo",                 0,          1,          -1 },
+	{ "kitty",          "kitty",       "bluetuith",                 0,          1,          -1 },
 	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
 	{ "flameshot",      "flameshot",       NULL,                        0,          1,          -1 },
 };
@@ -97,14 +97,14 @@ static const Layout layouts[] = {
 #define STATUSBAR "dwmblocks"
 
 /* commands */
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *termcmd[]  = { "kitty", NULL };
 /*rofi配置*/
 static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
-/*alacritty小窗口*/
-static const char scratchpadname[] = "alacritty small window";
-static const char *scratchpadcmd[] = { "alacritty", "-t" ,scratchpadname, NULL };
+/*kitty小窗口*/
+static const char scratchpadname[] = "kitty - Scratchpad";
+static const char *scratchpadcmd[] = { "kitty", "-t" ,scratchpadname, NULL };
 /*其它小窗口*/
-static const char *bluetuithcmd[] = {"alacritty", "-t", "bluetuith", "-e", "bluetuith", NULL };
+static const char *bluetuithcmd[] = {"kitty", "-t", "bluetuith", "-e", "bluetuith", NULL };
 static const char *musiccmd[] = {"/home/orange/Dwm/Scripts/system/dwm_music.sh", NULL };
 static const char *systraycmd[] = {"/home/orange/Dwm/Scripts/system/trayer.sh", NULL };
 /*锁屏*/

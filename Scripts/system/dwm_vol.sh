@@ -13,7 +13,7 @@ case $BLOCK_BUTTON in
 	3) mpc next >/dev/null && [[ $PLAY_STATUS ]] || notify-send -t 1500 "󰝚下一首音乐" "$(printf '%s %s %s\n' $(mpc current))" ;;
   4) wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+;;
   5) wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-;;
-	6) alacritty -e $EDITOR "$0" ;;
+	6) kitty -e $EDITOR "$0" ;;
 esac
 
 VOL_SWITCH=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk -F '[][]' '{print $2}' 2>/dev/null )
