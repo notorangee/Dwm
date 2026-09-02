@@ -1767,7 +1767,7 @@ overview(Monitor *m)
 
 static void togglemaxwin(const Arg *arg){
   Client* c = selmon->sel; 
-  if(!c || ((!c->isfloating || !selmon->isoverview) && issinglewin(arg)) || !strcmp(selmon->ltsymbol, ""))
+  if(!c || ((!c->isfloating || !selmon->isoverview) && issinglewin(arg)) || (!(c->tags & scratchtag) && !strcmp(selmon->ltsymbol, "")))
     return;
   if(c->ismaxwin){
     resize(c, c->oldx, c->oldy, c->oldw, c->oldh, 0);
