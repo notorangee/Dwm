@@ -134,7 +134,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags, oldtags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview, isscale, ismaxwin;
+  int isfixed, isfloating, isurgent, neverfocus, isneverfocus, oldstate, isfullscreen, oldfullscreen, oldoverview, isscale, ismaxwin;
   Client *next;
   Client *snext;
   Monitor *mon;
@@ -184,6 +184,7 @@ typedef struct {
   const char *title;
   unsigned int tags;
   int isfloating;
+  int isneverfocus;
   int monitor;
 } Rule;
 
@@ -400,6 +401,7 @@ void applyrules(Client *c) {
 
   /* rule matching */
   c->isfloating = 0;
+  c->isneverfocus = 0;
   c->tags = 0;
   XGetClassHint(dpy, c->win, &ch);
   class = ch.res_class ? ch.res_class : broken;
@@ -411,6 +413,7 @@ void applyrules(Client *c) {
         (!r->class || strstr(class, r->class)) &&
         (!r->instance || strstr(instance, r->instance))) {
       c->isfloating = r->isfloating;
+      c->isneverfocus = r->isneverfocus;
       c->tags |= r->tags ? r->tags : selmon->tagset[selmon->seltags];
       for (m = mons; m && m->num != r->monitor; m = m->next)
         ;
@@ -912,7 +915,7 @@ void detachstack(Client *c) {
   *tc = c->snext;
 
   if (c == c->mon->sel) {
-    for (t = c->mon->stack; t && !ISVISIBLE(t); t = t->snext)
+    for (t = c->mon->stack; t && (!ISVISIBLE(t) || t->isneverfocus); t = t->snext)
       ;
     c->mon->sel = t;
   }
@@ -965,7 +968,7 @@ void drawbar(Monitor *m) {
   }
 
   for (c = m->clients; c; c = c->next) {
-    if (!c->neverfocus && strcmp(c->name, "MusicWin"))
+    if (!c->isneverfocus && strcmp(c->name, "MusicWin"))
       occ |= c->tags;
     if (c->isurgent)
       urg |= c->tags;
@@ -1054,7 +1057,7 @@ void enternotify(XEvent *e) {
   if (m != selmon) {
     unfocus(selmon->sel, 1);
     selmon = m;
-  } else if (!c || c == selmon->sel)
+  } else if (!c || c == selmon->sel || c->isneverfocus)
     return;
   focus(c);
 }
@@ -1068,8 +1071,8 @@ void expose(XEvent *e) {
 }
 
 void focus(Client *c) {
-  if (!c || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus)
-    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->snext)
+  if (!c || !ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus)
+    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus); c = c->snext)
       ;
   if (selmon->sel && selmon->sel != c)
     unfocus(selmon->sel, 0);
@@ -1120,18 +1123,18 @@ void focusstack(const Arg *arg) {
   if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen) || selmon->sel->ismaxwin)
     return;
   if (arg->i > 0) {
-    for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next)
+    for (c = selmon->sel->next; c && (!ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus); c = c->next)
       ;
     if (!c)
-      for (c = selmon->clients; c && (!ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next)
+      for (c = selmon->clients; c && (!ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus); c = c->next)
         ;
   } else {
     for (i = selmon->clients; i != selmon->sel; i = i->next)
-      if (ISVISIBLE(i) && !HIDDEN(i) && !i->neverfocus)
+      if (ISVISIBLE(i) && !HIDDEN(i) && !i->isneverfocus)
         c = i;
     if (!c)
       for (; i; i = i->next)
-        if (ISVISIBLE(i) && !HIDDEN(i) && !i->neverfocus)
+        if (ISVISIBLE(i) && !HIDDEN(i) && !i->isneverfocus)
           c = i;
   }
   if (c) {
@@ -1452,7 +1455,7 @@ void manage(Window w, XWindowAttributes *wa) {
     c->h = c->mon->wh / 15;
     c->x = c->mon->wx + (c->mon->mw - WIDTH(c) - 2 * c->bw);
     c->y = c->mon->wy + 2 * c->bw;
-    c->neverfocus = True;
+    c->isneverfocus = True;
   }
   if (!strcmp(c->name, "MusicVisua")){
     c->tags = ~0 & TAGMASK;
@@ -1460,7 +1463,7 @@ void manage(Window w, XWindowAttributes *wa) {
     c->h = c->mon->wh / 6;
     c->x = c->mon->wx + (c->mon->mw - WIDTH(c) - 2 * c->bw);
     c->y = c->mon->wy + 2 * c->bw + c->mon->wh / 15;
-    c->neverfocus = True;
+    c->isneverfocus = True;
   }
 
   switch (attachdirection) {
@@ -1561,7 +1564,7 @@ void movemouse(const Arg *arg) {
 
   if (!(c = selmon->sel))
     return;
-  if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
+  if (c->isfullscreen || c->isneverfocus) /* no support moving fullscreen windows by mouse */
     return;
   restack(selmon);
   ocx = c->x;
@@ -1740,12 +1743,12 @@ movekeyboard_y(const Arg *arg){
 }
 
 Client *nexttiled(Client *c) {
-  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next);
+  for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus); c = c->next);
   return c;
 }
 
 Client *nextclient(Client *c) {
-  for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c) || c->neverfocus); c = c->next);
+  for (; c && ((c->mon->isoverview && c->isfloating && (c->tags & scratchtag)) || !ISVISIBLE(c) || HIDDEN(c) || c->isneverfocus); c = c->next);
   if (c && c->isfloating){
     c->oldx = c->x;
     c->oldy = c->y;
@@ -1892,7 +1895,7 @@ void resizemouse(const Arg *arg) {
 
   if (!(c = selmon->sel))
     return;
-  if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
+  if (c->isfullscreen || c->isneverfocus) /* no support resizing fullscreen windows by mouse */
     return;
   restack(selmon);
   ocx = c->x;
@@ -2427,7 +2430,7 @@ int issinglewin(const Arg *arg) {
     int cot = 0;
     int tag = selmon->tagset[selmon->seltags];
     for (c = selmon->clients; c; c = c->next) {
-        if (((ISVISIBLE(c) && !HIDDEN(c)) || (c->tags == (~0 & TAGMASK) && c->tags == tag)) && !c->neverfocus) {
+        if (((ISVISIBLE(c) && !HIDDEN(c)) || (c->tags == (~0 & TAGMASK) && c->tags == tag)) && !c->isneverfocus) {
             cot++;
         }
         if (cot != 1) {
@@ -2975,6 +2978,10 @@ void updatewindowtype(Client *c) {
 
 void updatewmhints(Client *c) {
   XWMHints *wmh;
+
+  if(c->isneverfocus){
+    return;
+  }
 
   if ((wmh = XGetWMHints(dpy, c->win))) {
     if (c == selmon->sel && wmh->flags & XUrgencyHint) {

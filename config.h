@@ -47,18 +47,18 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class            instance           title                    tags mask   isfloating   monitor */
-	{ "Alacritty",      "Alacritty",       "Alacritty - AutoStart",     1 << 0,     0,          -1 },
-	{ "Google-chrome",  "google-chrome",   NULL,                        1 << 1,     0,          -1 },
-	{ "steam",          NULL,              NULL,                        1 << 2,     0,          -1 },
-	{ "firefox",        NULL,              NULL,                        0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicWin",                  0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,          -1 },
-	{ "Alacritty",      "Alacritty",       "Bluetuith",                 0,          1,          -1 },
-	{ "Gimp",           NULL,              NULL,                        0,          1,          -1 },
-	{ "flameshot",      "flameshot",       NULL,                        0,          1,          -1 },
+	/* class            instance           title                    tags mask   isfloating isneverfocus monitor */
+	{ "Alacritty",      "Alacritty",       "Alacritty - AutoStart",     1 << 0,     0,         0,           -1 },
+	{ "Google-chrome",  "google-chrome",   NULL,                        1 << 1,     0,         0,           -1 },
+	{ "steam",          NULL,              NULL,                        1 << 2,     0,         0,           -1 },
+	{ "firefox",        NULL,              NULL,                        0,          0,         0,           -1 },
+	{ "Alacritty",      "Alacritty",       "musicfox",                  0,          0,         0,           -1 },
+	{ "Alacritty",      "Alacritty",       "MusicWin",                  0,          1,         0,           -1 },
+	{ "Alacritty",      "Alacritty",       "MusicVisua",                0,          1,         1,           -1 },
+	{ "Alacritty",      "Alacritty",       "MusicInfo",                 0,          1,         1,           -1 },
+	{ "Alacritty",      "Alacritty",       "Bluetuith",                 0,          1,         0,           -1 },
+	{ "Gimp",           NULL,              NULL,                        0,          1,         0,           -1 },
+	{ "flameshot",      "flameshot",       NULL,                        0,          1,         0,           -1 },
 };
 
 /* layout(s) */
